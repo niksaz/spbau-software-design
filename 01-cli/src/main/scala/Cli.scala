@@ -2,6 +2,8 @@ import java.util.Scanner
 
 import repl.{CommandPrompter, CommandReader, ErrorDisplayer, Repl}
 
+import scala.reflect.io.Path
+
 /** Command line interface for command interpreting. */
 object Cli extends CommandPrompter with CommandReader with ErrorDisplayer {
   private val inputStream = System.in
@@ -11,7 +13,8 @@ object Cli extends CommandPrompter with CommandReader with ErrorDisplayer {
   private val errorPrintStream = System.err
 
   def main(args: Array[String]): Unit = {
-    val repl = new Repl(this, this, this, inputStream, outputStream)
+    val currentPath = Path("").toAbsolute
+    val repl = new Repl(this, this, this, inputStream, outputStream, currentPath)
     repl.run()
   }
 
