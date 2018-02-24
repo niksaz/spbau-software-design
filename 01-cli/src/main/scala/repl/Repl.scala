@@ -1,6 +1,6 @@
 package repl
 
-import command.{EchoCommandRunner, PwdCommandRunner}
+import command.{CatCommandRunner, EchoCommandRunner, PwdCommandRunner}
 import lexical.{Lexer, LexicalParsingException}
 import model.{Environment, IOEnvironment}
 import process.SequentialCommandProcessor
@@ -40,9 +40,11 @@ class Repl(
   }
 
   private def registerDefaultCommandRunners(environment: Environment): Environment = {
+    val defaultCmdRunners = List(new PwdCommandRunner, new EchoCommandRunner, new CatCommandRunner)
     var newEnvironment = environment
-    newEnvironment = newEnvironment.registerCommandRunner(new PwdCommandRunner)
-    newEnvironment = newEnvironment.registerCommandRunner(new EchoCommandRunner)
+    defaultCmdRunners.foreach { commandRunner =>
+      newEnvironment = newEnvironment.registerCommandRunner(commandRunner)
+    }
     newEnvironment
   }
 }

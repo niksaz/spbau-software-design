@@ -64,6 +64,7 @@ class SequentialCommandProcessor extends CommandProcessor {
       }
     }
     // TODO(niksaz): Call external process otherwise.
+    ioEnvironment.printStream.println(s"$head command not found")
     defaultProcessingResult
   }
 }
