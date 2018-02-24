@@ -9,9 +9,9 @@ import scala.reflect.io.Path
 
 class CatCommandRunnerTest extends FunSuite {
   test("catCommand") {
-    val property = "java.io.tmpdir"
-    val tempDir = Path(System.getProperty(property))
-    val filename = "input.txt"
+    val tmpProperty = "java.io.tmpdir"
+    val tempDir = Path(System.getProperty(tmpProperty))
+    val filename = "catCommand.txt"
     val tempFile = tempDir.resolve(filename)
     tempFile.createFile(failIfExists = false)
     val printWriter = tempFile.toFile.printWriter()
