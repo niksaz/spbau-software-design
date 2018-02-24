@@ -1,5 +1,6 @@
 package repl
 
+import command.PwdCommandRunner
 import lexical.{Lexer, LexicalParsingException}
 import model.{Environment, IOEnvironment}
 import process.SequentialCommandProcessor
@@ -17,6 +18,7 @@ class Repl(
   def run(): Unit = {
     val lexer = new Lexer()
     var environment = Environment(currentPath)
+    environment = environment.registerCommandRunner(new PwdCommandRunner)
     val commandProcessor = new SequentialCommandProcessor
     while (true) {
       try {

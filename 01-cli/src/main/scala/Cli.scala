@@ -8,14 +8,13 @@ import scala.reflect.io.Path
 /** Command line interface for command interpreting. */
 object Cli extends CommandPrompter with CommandReader with ErrorDisplayer {
   private val inputStream = System.in
-  private val outputStream = System.out
   private val scanner = new Scanner(inputStream)
   private val printStream = System.out
   private val errorPrintStream = System.err
 
   def main(args: Array[String]): Unit = {
     val currentPath = Path("").toAbsolute
-    val repl = new Repl(this, this, this, IOEnvironment(inputStream, outputStream), currentPath)
+    val repl = new Repl(this, this, this, IOEnvironment(inputStream, printStream), currentPath)
     repl.run()
   }
 

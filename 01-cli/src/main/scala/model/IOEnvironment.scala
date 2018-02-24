@@ -1,6 +1,6 @@
 package model
 
-import java.io.{InputStream, OutputStream}
+import java.io.{InputStream, PrintStream}
 
 /** Represents stdin's and stdout's streams. */
-case class IOEnvironment(inputStream: InputStream, outputStream: OutputStream)
+case class IOEnvironment(inputStream: InputStream, printStream: PrintStream)
