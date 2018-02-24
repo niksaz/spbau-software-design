@@ -3,7 +3,7 @@ package process
 import java.io.{ByteArrayInputStream, ByteArrayOutputStream, PrintStream}
 import java.util.Scanner
 
-import command.CommandRunner
+import command.{CommandRunner, WcCommandRunner}
 import model._
 import org.scalatest.FunSuite
 
@@ -40,5 +40,32 @@ class SequentialCommandProcessorTest extends FunSuite {
     printStream.flush()
     assert(inputGot.toList == List("light", "light!", "light!!"))
     assert(byteArrayOutputStream.toByteArray sameElements "light!!!\n".getBytes)
+  }
+
+  test("pipeliningExternalCommand") {
+    val tmpProperty = "java.io.tmpdir"
+    val tempDir = Path(System.getProperty(tmpProperty))
+    val tempInnerDir = tempDir.resolve("pipeliningExternalCommandDir")
+    tempInnerDir.createDirectory(force = true, failIfExists = false)
+    tempInnerDir.resolve("file1").createFile(failIfExists = false)
+    tempInnerDir.resolve("file2").createFile(failIfExists = false)
+    tempInnerDir.resolve("file3").createFile(failIfExists = false)
+
+    val wcCommandRunner = new WcCommandRunner
+    val environment = Environment(tempInnerDir).registerCommandRunner(wcCommandRunner)
+
+    val sequentialCommandProcessor = new SequentialCommandProcessor
+    val inputStream = new ByteArrayInputStream("".getBytes)
+    val byteArrayOutputStream = new ByteArrayOutputStream
+    val printStream = new PrintStream(byteArrayOutputStream)
+    sequentialCommandProcessor
+      .processCommandSequence(
+        CommandSequence(List(
+          Command(List(Word(List(StringPart("ls"))), Word(List(StringPart("-al"))))),
+          Command(List(Word(List(StringPart("wc"))))))),
+        environment,
+        IOEnvironment(inputStream, printStream))
+    printStream.flush()
+    assert(byteArrayOutputStream.toByteArray sameElements "6 47 276\n".getBytes)
   }
 }

@@ -29,8 +29,10 @@ class WcCommandRunner extends CommandRunner("wc") {
     var lineCount = 1
     while (i < bytes.length) {
       if (areNextBytesFollowing(bytes, i, separatorBytes)) {
-        lineCount += 1
         i += separatorBytes.length
+        if (i != bytes.length) {
+          lineCount += 1
+        }
       } else if (bytes(i) == ' ') {
         i += 1
       } else {

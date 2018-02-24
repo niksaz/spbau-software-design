@@ -1,7 +1,5 @@
 package process
 
-import java.io.{InputStream, OutputStream}
-
 import model.{CommandSequence, Environment, IOEnvironment}
 
 /** An entity that is able to process [[CommandSequence]]s. */

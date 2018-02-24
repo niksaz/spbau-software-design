@@ -1,9 +1,11 @@
 package process
-import java.io.{ByteArrayInputStream, ByteArrayOutputStream, PrintStream}
+
+import java.io._
 
 import model.{CommandSequence, Environment, IOEnvironment}
 
 import scala.collection.mutable
+import scala.sys.process._
 
 /** [[CommandProcessor]] which processes command sequentially. */
 class SequentialCommandProcessor extends CommandProcessor {
@@ -63,8 +65,33 @@ class SequentialCommandProcessor extends CommandProcessor {
         return defaultProcessingResult
       }
     }
-    // TODO(niksaz): Call external process otherwise.
-    ioEnvironment.printStream.println(s"$head command not found")
+    delegateToExternalProcess(args, environment, ioEnvironment)
     defaultProcessingResult
+  }
+
+  private def delegateToExternalProcess(
+      args: List[String], environment: Environment, ioEnvironment: IOEnvironment): Unit = {
+    def rewriteInputToOutput(outputStream: OutputStream): Unit = {
+      val inputStream = ioEnvironment.inputStream
+      var byteRead: Int = 0
+      while ({byteRead = inputStream.read(); byteRead != -1}) {
+        outputStream.write(byteRead)
+      }
+      outputStream.close()
+    }
+    def redirectToOutputFromInput(outputStream: OutputStream)(inputStream: InputStream): Unit = {
+      var byteRead: Int = 0
+      while ({byteRead = inputStream.read(); byteRead != -1}) {
+        outputStream.write(byteRead)
+      }
+      inputStream.close()
+    }
+    val processIO = new ProcessIO(
+      rewriteInputToOutput,
+      redirectToOutputFromInput(ioEnvironment.printStream),
+      redirectToOutputFromInput(stderr))
+    val processBuilder = Process(args.mkString(" "), new File(environment.currentDir.toString()))
+    val process = processBuilder.run(processIO)
+    process.exitValue()
   }
 }

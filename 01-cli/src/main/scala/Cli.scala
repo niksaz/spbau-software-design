@@ -1,3 +1,4 @@
+import java.io.ByteArrayInputStream
 import java.util.Scanner
 
 import model.IOEnvironment
@@ -7,8 +8,8 @@ import scala.reflect.io.Path
 
 /** Command line interface for command interpreting. */
 object Cli extends CommandPrompter with CommandReader with ErrorDisplayer {
-  private val inputStream = System.in
-  private val scanner = new Scanner(inputStream)
+  private val inputStream = new ByteArrayInputStream("".getBytes)
+  private val scanner = new Scanner(System.in)
   private val printStream = System.out
   private val errorPrintStream = System.err
 

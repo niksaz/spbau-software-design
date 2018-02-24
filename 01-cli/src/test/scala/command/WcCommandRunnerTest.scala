@@ -39,7 +39,7 @@ class WcCommandRunnerTest extends FunSuite {
     val printStream = new PrintStream(outputStream)
     wcCommandRunner.run(List(), environment, IOEnvironment(inputStream, printStream))
     printStream.flush()
-    val expected = "3 2 15\n".getBytes
+    val expected = "2 2 15\n".getBytes
     assert(outputStream.toByteArray sameElements expected)
   }
 }
