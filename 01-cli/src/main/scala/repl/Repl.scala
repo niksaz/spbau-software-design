@@ -1,6 +1,6 @@
 package repl
 
-import command.PwdCommandRunner
+import command.{EchoCommandRunner, PwdCommandRunner}
 import lexical.{Lexer, LexicalParsingException}
 import model.{Environment, IOEnvironment}
 import process.SequentialCommandProcessor
@@ -18,7 +18,7 @@ class Repl(
   def run(): Unit = {
     val lexer = new Lexer()
     var environment = Environment(currentPath)
-    environment = environment.registerCommandRunner(new PwdCommandRunner)
+    environment = registerDefaultCommandRunners(environment)
     val commandProcessor = new SequentialCommandProcessor
     while (true) {
       try {
@@ -37,5 +37,12 @@ class Repl(
           errorDisplayer.showErrorMessage(s"Error occurred: ${e.getMessage}")
       }
     }
+  }
+
+  private def registerDefaultCommandRunners(environment: Environment): Environment = {
+    var newEnvironment = environment
+    newEnvironment = newEnvironment.registerCommandRunner(new PwdCommandRunner)
+    newEnvironment = newEnvironment.registerCommandRunner(new EchoCommandRunner)
+    newEnvironment
   }
 }
