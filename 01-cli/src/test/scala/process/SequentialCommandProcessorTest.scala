@@ -61,11 +61,11 @@ class SequentialCommandProcessorTest extends FunSuite {
     sequentialCommandProcessor
       .processCommandSequence(
         CommandSequence(List(
-          Command(List(Word(List(StringPart("ls"))), Word(List(StringPart("-al"))))),
+          Command(List(Word(List(StringPart("ls"))))),
           Command(List(Word(List(StringPart("wc"))))))),
         environment,
         IOEnvironment(inputStream, printStream))
     printStream.flush()
-    assert(byteArrayOutputStream.toByteArray sameElements "6 47 276\n".getBytes)
+    assert(byteArrayOutputStream.toByteArray sameElements "3 3 18\n".getBytes)
   }
 }
