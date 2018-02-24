@@ -2,17 +2,17 @@ package process
 
 import java.io.{InputStream, OutputStream}
 
-import model.{CommandSequence, Environment}
+import model.{CommandSequence, Environment, IOEnvironment}
 
 /** An entity that is able to process [[CommandSequence]]s. */
 trait CommandProcessor {
   /**
-    * Process the [[CommandSequence]] in the [[Environment]] with the given input and output
-    * streams.
+    * Process the [[CommandSequence]] in the [[Environment]] with the given [[IOEnvironment]].
     */
   def processCommandSequence(
       commandSequence: CommandSequence,
       environment: Environment,
-      initialInputStream: InputStream,
-      finalOutputStream: OutputStream): Environment
+      iOEnvironment: IOEnvironment): ProcessingResult
+
+  case class ProcessingResult(environment: Environment, shouldExit: Boolean)
 }

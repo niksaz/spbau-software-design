@@ -1,5 +1,6 @@
 import java.util.Scanner
 
+import model.IOEnvironment
 import repl.{CommandPrompter, CommandReader, ErrorDisplayer, Repl}
 
 import scala.reflect.io.Path
@@ -14,7 +15,7 @@ object Cli extends CommandPrompter with CommandReader with ErrorDisplayer {
 
   def main(args: Array[String]): Unit = {
     val currentPath = Path("").toAbsolute
-    val repl = new Repl(this, this, this, inputStream, outputStream, currentPath)
+    val repl = new Repl(this, this, this, IOEnvironment(inputStream, outputStream), currentPath)
     repl.run()
   }
 

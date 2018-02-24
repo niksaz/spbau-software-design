@@ -1,9 +1,7 @@
 package repl
 
-import java.io.{InputStream, OutputStream}
-
 import lexical.{Lexer, LexicalParsingException}
-import model.Environment
+import model.{Environment, IOEnvironment}
 import process.SequentialCommandProcessor
 
 import scala.reflect.io.Path
@@ -13,8 +11,7 @@ class Repl(
     val commandReader: CommandReader,
     val commandPrompter: CommandPrompter,
     val errorDisplayer: ErrorDisplayer,
-    val initialInputStream: InputStream,
-    val finalOutputStream: OutputStream,
+    val ioEnvironment: IOEnvironment,
     val currentPath: Path) {
   /** Starts the command processing. */
   def run(): Unit = {
@@ -26,9 +23,11 @@ class Repl(
         commandPrompter.promptUser()
         val nextCommandLine = commandReader.receiveNextCommandLine()
         val commands = lexer.analyze(nextCommandLine)
-        environment =
-          commandProcessor.processCommandSequence(
-            commands, environment, initialInputStream, finalOutputStream)
+        val result = commandProcessor.processCommandSequence(commands, environment, ioEnvironment)
+        if (result.shouldExit) {
+          return
+        }
+        environment = result.environment
       } catch {
         case e: LexicalParsingException =>
           errorDisplayer.showErrorMessage(s"Lexical error occurred: ${e.getMessage}")
