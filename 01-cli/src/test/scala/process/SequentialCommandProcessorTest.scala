@@ -66,6 +66,7 @@ class SequentialCommandProcessorTest extends FunSuite {
         environment,
         IOEnvironment(inputStream, printStream))
     printStream.flush()
+    println(s"DEBUG: ${new String(byteArrayOutputStream.toByteArray)}")
     assert(byteArrayOutputStream.toByteArray sameElements "6 47 276\n".getBytes)
   }
 }

@@ -11,11 +11,11 @@ class CatCommandRunner extends CommandRunner("cat") {
   override def run(
       args: List[String], environment: Environment, ioEnvironment: IOEnvironment): Unit = {
     val outputStream = new BufferedOutputStream(ioEnvironment.printStream)
-      args.foreach { arg =>
-        val filePath = environment.currentDir.resolve(Path(arg))
-        val bytes = Files.readAllBytes(Paths.get(filePath.toString()))
-        outputStream.write(bytes)
-        outputStream.flush()
-      }
+    args.foreach { arg =>
+      val filePath = environment.currentDir.resolve(Path(arg))
+      val bytes = Files.readAllBytes(Paths.get(filePath.toString()))
+      outputStream.write(bytes)
+      outputStream.flush()
     }
+  }
 }
