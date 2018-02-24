@@ -1,9 +1,9 @@
 package repl
 
 import command.{CatCommandRunner, EchoCommandRunner, PwdCommandRunner, WcCommandRunner}
-import lexical.{Lexer, LexicalParsingException}
+import lexical.{Lexer, LexicalAnalyzer, LexicalParsingException}
 import model.{Environment, IOEnvironment}
-import process.SequentialCommandProcessor
+import process.{CommandProcessor, SequentialCommandProcessor}
 
 import scala.reflect.io.Path
 
@@ -16,10 +16,10 @@ class Repl(
     val currentPath: Path) {
   /** Starts the command processing. */
   def run(): Unit = {
-    val lexer = new Lexer()
+    val lexer: LexicalAnalyzer = new Lexer()
     var environment = Environment(currentPath)
     environment = registerDefaultCommandRunners(environment)
-    val commandProcessor = new SequentialCommandProcessor
+    val commandProcessor: CommandProcessor = new SequentialCommandProcessor
     while (true) {
       try {
         commandPrompter.promptUser()
