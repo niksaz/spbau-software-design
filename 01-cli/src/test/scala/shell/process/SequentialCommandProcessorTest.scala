@@ -6,6 +6,7 @@ import java.util.Scanner
 import shell.command.{CommandRunner, WcCommandRunner}
 import shell.model._
 import org.scalatest.FunSuite
+import shell.Converter
 
 import scala.collection.mutable
 import scala.reflect.io.Path
@@ -26,7 +27,8 @@ class SequentialCommandProcessorTest extends FunSuite {
     }
     val environment = Environment(Path("")).registerCommandRunner(commandRunner)
     val sequentialCommandProcessor = new SequentialCommandProcessor
-    val inputStream = new ByteArrayInputStream("light\n".getBytes)
+    val inputStream =
+      new ByteArrayInputStream(Converter.getLineBytes(endWithSeparator = true, "light"))
     val byteArrayOutputStream = new ByteArrayOutputStream
     val printStream = new PrintStream(byteArrayOutputStream)
     sequentialCommandProcessor
@@ -39,7 +41,8 @@ class SequentialCommandProcessorTest extends FunSuite {
         IOEnvironment(inputStream, printStream))
     printStream.flush()
     assert(inputGot.toList == List("light", "light!", "light!!"))
-    assert(byteArrayOutputStream.toByteArray sameElements "light!!!\n".getBytes)
+    val expectedBytes = Converter.getLineBytes(endWithSeparator = true, "light!!!")
+    assert(byteArrayOutputStream.toByteArray sameElements expectedBytes)
   }
 
   test("pipeliningExternalCommand") {
@@ -66,6 +69,8 @@ class SequentialCommandProcessorTest extends FunSuite {
         environment,
         IOEnvironment(inputStream, printStream))
     printStream.flush()
-    assert(byteArrayOutputStream.toByteArray sameElements "3 3 18\n".getBytes)
+    val byteCount = 15 + 3 * System.lineSeparator().length
+    val expectedBytes = Converter.getLineBytes(endWithSeparator = true, s"3 3 $byteCount")
+    assert(byteArrayOutputStream.toByteArray sameElements expectedBytes)
   }
 }

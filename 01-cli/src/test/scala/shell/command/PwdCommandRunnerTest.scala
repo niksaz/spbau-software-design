@@ -4,6 +4,7 @@ import java.io.{ByteArrayInputStream, ByteArrayOutputStream, PrintStream}
 
 import shell.model.{Environment, IOEnvironment}
 import org.scalatest.FunSuite
+import shell.Converter
 
 import scala.reflect.io.Path
 
@@ -18,7 +19,8 @@ class PwdCommandRunnerTest extends FunSuite {
     val printStream = new PrintStream(outputStream)
     pwdCommandRunner.run(List(), environment, IOEnvironment(inputStream, printStream))
     printStream.flush()
-    val expected = "/Users/niksaz/University/spbau-software-design\n".getBytes
-    assert(outputStream.toByteArray sameElements expected)
+    val expectedBytes = Converter.getLineBytes(
+      endWithSeparator = true, "/Users/niksaz/University/spbau-software-design")
+    assert(outputStream.toByteArray sameElements expectedBytes)
   }
 }

@@ -2,8 +2,9 @@ package shell.command
 
 import java.io.{ByteArrayInputStream, ByteArrayOutputStream, PrintStream}
 
-import shell.model.{Environment, IOEnvironment}
 import org.scalatest.FunSuite
+import shell.Converter
+import shell.model.{Environment, IOEnvironment}
 
 import scala.reflect.io.Path
 
@@ -27,8 +28,9 @@ class CatCommandRunnerTest extends FunSuite {
     val printStream = new PrintStream(outputStream)
     catCommandRunner.run(List(filename), environment, IOEnvironment(inputStream, printStream))
     printStream.flush()
-    val expected = "It is fun\nto create temporary directories\nin Scala!".getBytes
-    assert(outputStream.toByteArray sameElements expected)
+    val expectedBytes = Converter.getLineBytes(
+      endWithSeparator = false, "It is fun", "to create temporary directories", "in Scala!")
+    assert(outputStream.toByteArray sameElements expectedBytes)
   }
 
   test("catCommandDefaultInputStream") {
@@ -39,6 +41,7 @@ class CatCommandRunnerTest extends FunSuite {
     val printStream = new PrintStream(outputStream)
     catCommandRunner.run(List(), environment, IOEnvironment(inputStream, printStream))
     printStream.flush()
-    assert(outputStream.toByteArray sameElements "weirdo".getBytes)
+    val expectedBytes = "weirdo".getBytes
+    assert(outputStream.toByteArray sameElements expectedBytes)
   }
 }

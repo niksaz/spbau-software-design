@@ -4,6 +4,7 @@ import java.io.{ByteArrayInputStream, ByteArrayOutputStream, PrintStream}
 
 import shell.model.{Environment, IOEnvironment}
 import org.scalatest.FunSuite
+import shell.Converter
 
 import scala.reflect.io.Path
 
@@ -17,6 +18,7 @@ class EchoCommandRunnerTest extends FunSuite {
     echoCommandRunner
       .run(List("hello", "world"), environment, IOEnvironment(inputStream, printStream))
     printStream.flush()
-    assert(outputStream.toByteArray sameElements "hello\nworld\n".getBytes)
+    val expectedBytes = Converter.getLineBytes(endWithSeparator = true, "hello", "world")
+    assert(outputStream.toByteArray sameElements expectedBytes)
   }
 }
