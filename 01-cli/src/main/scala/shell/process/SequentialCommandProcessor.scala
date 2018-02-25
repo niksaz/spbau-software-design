@@ -59,8 +59,8 @@ class SequentialCommandProcessor extends CommandProcessor {
       val rightPart = head.substring(equalsIndex + 1)
       return processCommand(tail, environment.updateVariable(leftPart, rightPart), ioEnvironment)
     }
-    environment.commandRunners.foreach { commandRunner =>
-      if (commandRunner.name == args.head) {
+    environment.commandToRunners.foreach { case (name, commandRunner) =>
+      if (name == args.head) {
         commandRunner.run(args.tail, environment, ioEnvironment)
         return defaultProcessingResult
       }

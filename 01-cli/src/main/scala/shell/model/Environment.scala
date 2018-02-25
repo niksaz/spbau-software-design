@@ -8,22 +8,22 @@ import scala.reflect.io.{Directory, Path}
 case class Environment private (
     currentDir: Directory,
     variables: Map[String, String],
-    commandRunners: List[CommandRunner]) extends VariableSupplier {
+    commandToRunners: Map[String, CommandRunner]) extends VariableSupplier {
   /** Returns the value for a given variable. */
   override def retrieveVariable(variableName: String): String =
     variables.getOrElse(variableName, "")
 
   def updateVariable(variableName: String, value: String): Environment = {
     val updatedVariables = variables + ((variableName, value))
-    Environment(currentDir, updatedVariables, commandRunners)
+    Environment(currentDir, updatedVariables, commandToRunners)
   }
 
   def registerCommandRunner(commandRunner: CommandRunner): Environment = {
-    Environment(currentDir, variables, commandRunner :: commandRunners)
+    Environment(currentDir, variables, commandToRunners + (commandRunner.name -> commandRunner))
   }
 }
 
 object Environment {
   def apply(currentPath: Path): Environment =
-    new Environment(Directory(currentPath), Map(), List())
+    new Environment(Directory(currentPath), Map(), Map())
 }
