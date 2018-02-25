@@ -1,4 +1,5 @@
 package command
+
 import java.io.PrintStream
 import java.nio.file.{Files, Paths}
 
@@ -11,7 +12,8 @@ class WcCommandRunner extends CommandRunner("wc") {
   override def run(
       args: List[String], environment: Environment, ioEnvironment: IOEnvironment): Unit = {
     if (args.isEmpty) {
-      val bytes = Stream.continually(ioEnvironment.inputStream.read).takeWhile(-1 != _).map(_.toByte).toArray
+      val bytes =
+        Stream.continually(ioEnvironment.inputStream.read).takeWhile(-1 != _).map(_.toByte).toArray
       countAndPrintStatisticsFor(bytes, ioEnvironment.printStream)
     } else {
       args.foreach { arg =>

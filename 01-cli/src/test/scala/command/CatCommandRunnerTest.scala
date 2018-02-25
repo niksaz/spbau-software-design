@@ -30,4 +30,15 @@ class CatCommandRunnerTest extends FunSuite {
     val expected = "It is fun\nto create temporary directories\nin Scala!".getBytes
     assert(outputStream.toByteArray sameElements expected)
   }
+
+  test("catCommandInputStream") {
+    val catCommandRunner = new CatCommandRunner
+    val environment = Environment(Path("")).registerCommandRunner(catCommandRunner)
+    val inputStream = new ByteArrayInputStream("weirdo".getBytes)
+    val outputStream = new ByteArrayOutputStream()
+    val printStream = new PrintStream(outputStream)
+    catCommandRunner.run(List(), environment, IOEnvironment(inputStream, printStream))
+    printStream.flush()
+    assert(outputStream.toByteArray sameElements "weirdo".getBytes)
+  }
 }

@@ -1,4 +1,5 @@
 package command
+
 import model.{Environment, IOEnvironment}
 
 /** Command for printing current directory. */

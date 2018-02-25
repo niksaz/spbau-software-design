@@ -1,4 +1,5 @@
 package command
+
 import java.io.BufferedOutputStream
 import java.nio.file.{Files, Paths}
 
@@ -11,11 +12,20 @@ class CatCommandRunner extends CommandRunner("cat") {
   override def run(
       args: List[String], environment: Environment, ioEnvironment: IOEnvironment): Unit = {
     val outputStream = new BufferedOutputStream(ioEnvironment.printStream)
-    args.foreach { arg =>
-      val filePath = environment.currentDir.resolve(Path(arg))
-      val bytes = Files.readAllBytes(Paths.get(filePath.toString()))
+    def writeBytesToOutput(bytes: Array[Byte]): Unit = {
       outputStream.write(bytes)
       outputStream.flush()
+    }
+    if (args.isEmpty) {
+      val bytes =
+        Stream.continually(ioEnvironment.inputStream.read).takeWhile(-1 != _).map(_.toByte).toArray
+      writeBytesToOutput(bytes)
+    } else {
+      args.foreach { arg =>
+        val filePath = environment.currentDir.resolve(Path(arg))
+        val bytes = Files.readAllBytes(Paths.get(filePath.toString()))
+        writeBytesToOutput(bytes)
+      }
     }
   }
 }
