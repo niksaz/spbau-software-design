@@ -1,6 +1,5 @@
 package shell.command
 
-import java.io.FileInputStream
 import java.util.Scanner
 
 import org.rogach.scallop.{ScallopConf, ScallopOption}
@@ -47,7 +46,7 @@ class GrepCommandRunner extends CommandRunner("grep") {
 
 object GrepCommandRunner {
   /** [[ScallopConf]] for the parsing of [[GrepCommandRunner]] args. */
-  class GrepArgsConfiguration(args: Seq[String]) extends ScallopConf(args) {
+  private class GrepArgsConfiguration(args: Seq[String]) extends ScallopConf(args) {
     val i: ScallopOption[Boolean] = opt[Boolean]()
     val w: ScallopOption[Boolean] = opt[Boolean]()
     val a: ScallopOption[Int] = opt[Int](short = 'A', default = Some(0), validate = 0<=_)
