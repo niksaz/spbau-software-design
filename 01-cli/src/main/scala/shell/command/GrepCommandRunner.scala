@@ -13,7 +13,8 @@ class GrepCommandRunner extends CommandRunner("grep") {
   ): Unit = {
     try {
       val config = new GrepArgsConfiguration(args)
-      val pattern = (if (config.i()) config.pattern().toLowerCase else config.pattern()).r
+      val regex = if (config.i()) config.pattern().toLowerCase else config.pattern()
+      val pattern = (if (config.w()) f"\\b$regex\\b" else regex).r
       val inputStreams =
         if (config.filenames.isEmpty) List(ioEnvironment.inputStream)
         else config.filenames().map(environment.currentDir.resolve(_).toFile.inputStream())
@@ -23,11 +24,7 @@ class GrepCommandRunner extends CommandRunner("grep") {
         while (scanner.hasNext) {
           val line = scanner.nextLine()
           val lineForSearch = if (config.i()) line.toLowerCase else line
-          val isLineMatches = if (config.w()) {
-            lineForSearch.split("\\s+").exists(word => pattern.findFirstIn(word).isDefined)
-          } else {
-            pattern.findFirstIn(lineForSearch).isDefined
-          }
+          val isLineMatches = pattern.findFirstIn(lineForSearch).isDefined
           if (isLineMatches) {
             shouldPrintLines = 1 + config.a()
           }
@@ -39,7 +36,7 @@ class GrepCommandRunner extends CommandRunner("grep") {
         inputStreams.foreach(_.close())
       }
     } catch {
-      case t: Throwable => System.err.println(s"grep: ${t.getMessage}")
+      case t: Exception => System.err.println(s"grep: ${t.getMessage}")
     }
   }
 }

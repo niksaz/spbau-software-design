@@ -58,7 +58,7 @@ class GrepCommandRunnerTest extends FunSuite {
       Converter.getLineBytes(endWithSeparator = true, "whats up"))
     val outputStream = new ByteArrayOutputStream()
     val printStream = new PrintStream(outputStream, true)
-    grepCommandRunner.run(List("-w", "s.u"), environment, IOEnvironment(inputStream, printStream))
+    grepCommandRunner.run(List("-w", "what"), environment, IOEnvironment(inputStream, printStream))
     assert(outputStream.toByteArray.isEmpty)
   }
 
