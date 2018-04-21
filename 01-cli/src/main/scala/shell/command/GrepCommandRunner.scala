@@ -36,7 +36,7 @@ class GrepCommandRunner extends CommandRunner("grep") {
         inputStreams.foreach(_.close())
       }
     } catch {
-      case t: Exception => System.err.println(s"grep: ${t.getMessage}")
+      case e: Exception => System.err.println(s"grep: ${e.getMessage}")
     }
   }
 }
