@@ -1,6 +1,6 @@
 package shell.repl
 
-import shell.command.{CatCommandRunner, EchoCommandRunner, PwdCommandRunner, WcCommandRunner}
+import shell.command._
 import shell.lexical.{Lexer, LexicalAnalyzer, LexicalParsingException}
 import shell.model.{Environment, IOEnvironment}
 import shell.process.{CommandProcessor, SequentialCommandProcessor}
@@ -41,8 +41,11 @@ class Repl(
 
   private def registerDefaultCommandRunners(environment: Environment): Environment = {
     var newEnvironment = environment
-    List(new PwdCommandRunner, new EchoCommandRunner, new CatCommandRunner, new WcCommandRunner)
-      .foreach { commandRunner =>
+    val commandRunners =
+      List(
+        new PwdCommandRunner, new EchoCommandRunner, new CatCommandRunner, new WcCommandRunner,
+        new GrepCommandRunner)
+    commandRunners.foreach { commandRunner =>
       newEnvironment = newEnvironment.registerCommandRunner(commandRunner)
     }
     newEnvironment
