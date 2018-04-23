@@ -34,9 +34,9 @@ class LsCommandRunnerTest extends FunSuite {
       s"${tempFile.toAbsolute}",
       s"could not find ${missingTempFile.toAbsolute}",
       s"${tempDir.toAbsolute}:",
-      s"${"\t"}${tempFile.toAbsolute}",
-      s"${(tempDir / ".").toAbsolute}:",
-      s"${"\t"}${(tempDir / "." / filename).toAbsolute}"
+      s"${"\t"}${tempDir.relativize(tempFile)}",
+      s"${tempDir.toAbsolute}:",
+      s"${"\t"}$filename"
     )
     assert(outputStream.toByteArray sameElements expectedBytes)
   }
@@ -60,8 +60,8 @@ class LsCommandRunnerTest extends FunSuite {
     printStream.flush()
     val expectedBytes = Converter.getLineBytes(
       endWithSeparator = true,
-      s"${(tempDir / ".").toAbsolute}:",
-      s"${"\t"}${(tempDir / "." / filename).toAbsolute}"
+      s"${tempDir.toAbsolute}:",
+      s"${"\t"}$filename"
     )
     assert(outputStream.toByteArray sameElements expectedBytes)
   }

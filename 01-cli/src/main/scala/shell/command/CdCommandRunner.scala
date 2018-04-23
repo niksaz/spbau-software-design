@@ -16,7 +16,7 @@ class CdCommandRunner extends CommandRunner("cd") {
                     ioEnvironment: IOEnvironment
                   ): Unit = {
     val newPath: Path = args.size match {
-      case 0 => Path.apply(".")
+      case 0 => System.getProperty("user.home")
       case 1 =>
         val arg = Directory(args.head)
         val result = if (arg.isAbsolute) {
