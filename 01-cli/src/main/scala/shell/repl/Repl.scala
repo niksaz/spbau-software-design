@@ -45,6 +45,7 @@ class Repl(
       new PwdCommandRunner,
       new EchoCommandRunner,
       new CatCommandRunner,
+      new GrepCommandRunner,
       new WcCommandRunner,
       new CdCommandRunner,
       new LsCommandRunner
