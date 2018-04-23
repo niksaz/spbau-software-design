@@ -11,6 +11,7 @@ class LsCommandRunner extends CommandRunner("ls") {
   override def run(
       args: List[String], environment: Environment, ioEnvironment: IOEnvironment): Unit = {
     val printStream = new PrintStream(ioEnvironment.printStream)
+    val userHome = System.getProperty("user.dir")
     (if (args.isEmpty) {
       List(Path.apply("."))
     } else {
@@ -20,7 +21,7 @@ class LsCommandRunner extends CommandRunner("ls") {
         if (arg.isAbsolute) {
           arg
         } else {
-          environment.currentDir.resolve(arg)
+          (environment.currentDir / arg).toCanonical.toDirectory
         }
       )
     }.filter { arg =>
@@ -35,7 +36,7 @@ class LsCommandRunner extends CommandRunner("ls") {
       }
     }.foreach { arg =>
       printStream.println(s"$arg:")
-      arg.files.foreach { file => printStream.println(s"\t$file") }
+      arg.list.foreach { subpath => printStream.println(s"\t${arg.relativize(subpath)}") }
     }
   }
 }
