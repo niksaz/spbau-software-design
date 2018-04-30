@@ -7,7 +7,7 @@ import ru.spbau.roguelike.view.GameScreen
 object GameRunner {
   def main(args: Array[String]): Unit = {
     val width = 48
-    val height = 21
+    val height = 20
 
     val worldState = WorldState(width, height)
 

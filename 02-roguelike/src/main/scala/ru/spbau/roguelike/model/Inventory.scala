@@ -1,8 +1,14 @@
 package ru.spbau.roguelike.model
 
 class Inventory {
-  private val equippedItems: List[Item] = List()
-  private val storedItems: List[Item] = List()
+  private var equippedItems = List[Item]()
+  private var storedItems = List[Item]()
 
-  def getStats: GameStats = equippedItems.foldLeft(GameStats(0, 0, 0))(_ + _.stats)
+  def getStats: CombatStats = equippedItems.foldLeft(CombatStats(0, 0, 0))(_ + _.stats)
+
+  def addItem(item: Item): Unit = {
+    storedItems = item :: storedItems
+  }
+
+  def getItems: List[Item] = equippedItems ++ storedItems
 }

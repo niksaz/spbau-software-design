@@ -13,6 +13,9 @@ class InputListenerImpl(private val worldState: WorldState) extends InputListene
       if (worldState.getIsInInventory) {
         keyStroke.getInputType match {
           case InputType.ArrowDown =>
+            worldState.moveDownInInventory()
+          case InputType.ArrowUp =>
+            worldState.moveUpInInventory()
           case InputType.Character => keyStroke.getCharacter.toLower match {
             case 'i' =>
               worldState.changeIsInInventoryTo(false)
