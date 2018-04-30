@@ -1,0 +1,24 @@
+package ru.spbau.roguelike.model
+
+import scala.util.Random
+
+class WorldMap(val width: Int, val height: Int) {
+
+  private val entities = Array.ofDim[WorldMapEntity](width, height)
+
+  {
+    val generator = new Random
+    for (column <- 0 until width) {
+      for (row <- 0 until height) {
+        entities(column)(row) =
+          if (column == 0 || column + 1 == width || row == 0 || row + 1 == height) {
+            Wall()
+          } else {
+            if (generator.nextInt(4) == 0) Wall() else Floor()
+          }
+      }
+    }
+  }
+
+  def getEntityAt(column: Int, row: Int): WorldMapEntity = entities(column)(row)
+}
