@@ -1,8 +1,7 @@
 package ru.spbau.roguelike
 
-import ru.spbau.roguelike.controller.InputListenerImpl
 import ru.spbau.roguelike.model.WorldState
-import ru.spbau.roguelike.view.GameScreen
+import ru.spbau.roguelike.view.GameView
 
 object GameRunner {
   def main(args: Array[String]): Unit = {
@@ -11,11 +10,7 @@ object GameRunner {
 
     val worldState = WorldState(width, height)
 
-    val screen = new GameScreen(width, height)
-    val inputListener = new InputListenerImpl(worldState)
-    screen.addOnInputListener(inputListener)
-
-    worldState.addChangeListener(screen)
-    worldState.notifyChangeListeners()
+    val gameView = new GameView(worldState)
+    gameView.show()
   }
 }

@@ -1,14 +1,26 @@
 package ru.spbau.roguelike.model
 
-class Inventory {
-  private var equippedItems = List[Item]()
-  private var storedItems = List[Item]()
+case class InventoryItem(item: Item, var isEquipped: Boolean)
 
-  def getStats: CombatStats = equippedItems.foldLeft(CombatStats(0, 0, 0))(_ + _.stats)
+class Inventory {
+  private var items: List[InventoryItem] = List()
+
+  def getItems: List[InventoryItem] = items
+
+  def getStats: CombatStats =
+    items.filter(_.isEquipped).foldLeft(CombatStats(0, 0, 0))(_ + _.item.stats)
 
   def addItem(item: Item): Unit = {
-    storedItems = item :: storedItems
+    items = InventoryItem(item, isEquipped = false) :: items
   }
 
-  def getItems: List[Item] = equippedItems ++ storedItems
+  def invertIsEquippedItem(itemIndex: Int): Unit = {
+    val itemToInvert = items(itemIndex)
+    if (!itemToInvert.isEquipped) {
+      items.filter(_.item.bodyPart == itemToInvert.item.bodyPart).foreach { item =>
+        item.isEquipped = false
+      }
+    }
+    items(itemIndex).isEquipped ^= true
+  }
 }
