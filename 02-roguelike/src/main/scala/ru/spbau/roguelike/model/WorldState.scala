@@ -32,75 +32,76 @@ class WorldState private (
   }
 
   def moveCharacterUp(): Unit = {
-    nextTimeStepWithCharacterDelta(0, -1)
+    nextTimeStepWithCharacterDelta((0, -1))
   }
 
   def moveCharacterDown(): Unit = {
-    nextTimeStepWithCharacterDelta(0, 1)
+    nextTimeStepWithCharacterDelta((0, 1))
   }
 
   def moveCharacterLeft(): Unit = {
-    nextTimeStepWithCharacterDelta(-1, 0)
+    nextTimeStepWithCharacterDelta((-1, 0))
   }
 
   def moveCharacterRight(): Unit = {
-    nextTimeStepWithCharacterDelta(1, 0)
+    nextTimeStepWithCharacterDelta((1, 0))
   }
 
-  private def nextTimeStepWithCharacterDelta(charDeltaX: Int, charDeltaY: Int): Unit = {
+  private def nextTimeStepWithCharacterDelta(delta: (Int, Int)): Unit = {
     WorldState.logger.info("New time step")
+    WorldState.logger.info(s"Character state is $character")
     lastTimeStepMessage = ""
-    var charNewX = character.posX + charDeltaX
-    var charNewY = character.posY + charDeltaY
-    if (!terrainMap.isPassable(charNewX, charNewY)) {
-      charNewX = character.posX
-      charNewY = character.posY
-    }
+    val (charNewX, charNewY) = tryToMoveByDelta(character.posX, character.posY, delta)
     var wasFighting = false
     val newMobs = mutable.ListBuffer[MobCharacter]()
     mobs.foreach { mobInPast =>
       var mob = mobInPast
       val mobDir = WorldState.DIRS(WorldState.generator.nextInt(4))
-      var mobNewX = mob.posX + mobDir._1
-      var mobNewY = mob.posY + mobDir._2
-      if (!terrainMap.isPassable(mobNewX, mobNewY)) {
-        mobNewX = mob.posX
-        mobNewY = mob.posY
-      }
+      val (mobNewX, mobNewY) = tryToMoveByDelta(mob.posX, mob.posY, mobDir)
       val sameFinalPos = (mobNewX, mobNewY) == (charNewX, charNewY)
       val swappedPos =
         (mobNewX, mobNewY) == (character.posX, character.posY) &&
         (charNewX, charNewY) == (mob.posX, mob.posY)
       val shouldFightOccur = sameFinalPos || swappedPos
       if (shouldFightOccur) {
+        WorldState.logger.info(s"Fighting with mob")
         val afterFightChars = WorldState.combatResolver.resolveFight(character, mob)
         character = afterFightChars._1.asInstanceOf[PlayerCharacter]
         mob = afterFightChars._2.asInstanceOf[MobCharacter]
-        if (lastTimeStepMessage.isEmpty) {
-        }
       } else {
+        WorldState.logger.info(
+          s"Mob moving from (${mob.posX}, ${mob.posY}) to ($mobNewX, $mobNewY).")
         mob = mob.moveTo(mobNewX, mobNewY)
       }
       wasFighting |= shouldFightOccur
       if (mob.currentHealth == 0) {
         val droppedItem = WorldState.dropItemGenerator.generateDropItem(character, mob)
-        lastTimeStepMessage = f"You've defeated a mob!${
-          if (droppedItem.nonEmpty) f" It dropped ${droppedItem.get.name}" else ""}"
+        lastTimeStepMessage = s"You've defeated a mob!${
+          if (droppedItem.nonEmpty) s" It dropped ${droppedItem.get.name}" else ""}"
+        WorldState.logger.info(s"$lastTimeStepMessage")
         if (droppedItem.nonEmpty) {
           character = character.addItem(droppedItem.get)
         }
       } else {
         newMobs.append(mob)
         if (shouldFightOccur) {
-          lastTimeStepMessage = f"You've fought a mob. It has ${mob.currentHealth} HP left."
+          lastTimeStepMessage = s"You've fought a mob. It has ${mob.currentHealth} HP left."
         }
       }
     }
     if (!wasFighting) {
+      WorldState.logger.info(
+        s"Character moving from (${character.posX}, ${character.posY}) to ($charNewX, $charNewY).")
       character = character.moveTo(charNewX, charNewY)
     }
     mobs = newMobs.toList
     notifyChangeListeners()
+  }
+
+  private def tryToMoveByDelta(posX: Int, posY: Int, delta: (Int, Int)): (Int, Int) = {
+    val newPosX = posX + delta._1
+    val newPosY = posY + delta._2
+    if (terrainMap.isPassable(newPosX, newPosY)) (newPosX, newPosY) else (posX, posY)
   }
 
   def addChangeListener(changeListener: WorldStateChangeListener): Unit = {

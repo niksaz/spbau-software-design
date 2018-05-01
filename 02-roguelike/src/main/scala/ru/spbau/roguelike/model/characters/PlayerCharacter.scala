@@ -11,6 +11,8 @@ class PlayerCharacter private (
   private val inventory: Inventory,
 ) extends PositionalCharacter with CombatCharacter {
 
+  override def toString = s"PlayerCharacter($posX, $posY, $currentHealth, $stats, $getItems)"
+
   def getCurrentHealth: Int = currentHealth
 
   def getStats: CombatStats = stats + inventory.getStats

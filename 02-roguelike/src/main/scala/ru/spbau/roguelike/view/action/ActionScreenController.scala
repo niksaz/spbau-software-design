@@ -110,15 +110,15 @@ class ActionScreenController(
     val row = healthHeader.getPosition.getRow
 
     val healthColumn = healthHeader.getPosition.component1() + healthHeader.getText.length + 1
-    val healthLabel = f"$currentHealth/${charStats.health}"
+    val healthLabel = s"$currentHealth/${charStats.health}"
     overlay.putText(healthLabel, Position.of(healthColumn, row))
 
     val armorColumn = armorHeader.getPosition.component1() + armorHeader.getText.length + 1
-    val armorLabel = f"${charStats.armor}"
+    val armorLabel = s"${charStats.armor}"
     overlay.putText(armorLabel, Position.of(armorColumn, row))
 
     val attackColumn = attackHeader.getPosition.component1() + attackHeader.getText.length + 1
-    val attackLabel = f"${charStats.attack}"
+    val attackLabel = s"${charStats.attack}"
     overlay.putText(attackLabel, Position.of(attackColumn, row))
   }
 }

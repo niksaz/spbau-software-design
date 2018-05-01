@@ -151,15 +151,15 @@ class InventoryScreenController(
     val row = healthHeader.getPosition.getRow
 
     val healthColumn = healthHeader.getPosition.component1() + healthHeader.getText.length + 1
-    val healthLabel = f"$currentHealth/${charStats.health}"
+    val healthLabel = s"$currentHealth/${charStats.health}"
     overlay.putText(healthLabel, Position.of(healthColumn, row))
 
     val armorColumn = armorHeader.getPosition.component1() + armorHeader.getText.length + 1
-    val armorLabel = f"${charStats.armor}"
+    val armorLabel = s"${charStats.armor}"
     overlay.putText(armorLabel, Position.of(armorColumn, row))
 
     val attackColumn = attackHeader.getPosition.component1() + attackHeader.getText.length + 1
-    val attackLabel = f"${charStats.attack}"
+    val attackLabel = s"${charStats.attack}"
     overlay.putText(attackLabel, Position.of(attackColumn, row))
   }
 }
@@ -171,7 +171,7 @@ object InventoryScreenController {
     if (inventoryItem.isEquipped) {
       inventoryItemDesc.append("[*] ")
     }
-    val itemLabel = f"${item.name} ${statsToString(item.stats)} @ ${item.itemSlot.name}"
+    val itemLabel = s"${item.name} ${statsToString(item.stats)} @ ${item.itemSlot.name}"
     inventoryItemDesc.append(itemLabel)
     inventoryItemDesc.toString()
   }
@@ -179,13 +179,13 @@ object InventoryScreenController {
   private def statsToString(stats: CombatStats): String = {
     val nonzeroStats = mutable.ListBuffer[String]()
     if (stats.health != 0) {
-      nonzeroStats.append(f"HP: +${stats.health}")
+      nonzeroStats.append(s"HP: +${stats.health}")
     }
     if (stats.armor != 0) {
-      nonzeroStats.append(f"ARM: +${stats.armor}")
+      nonzeroStats.append(s"ARM: +${stats.armor}")
     }
     if (stats.attack != 0) {
-      nonzeroStats.append(f"ATK: +${stats.attack}")
+      nonzeroStats.append(s"ATK: +${stats.attack}")
     }
     nonzeroStats.mkString("(", ", ", ")")
   }
