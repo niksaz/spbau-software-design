@@ -1,12 +1,14 @@
-package ru.spbau.roguelike.model
+package ru.spbau.roguelike.model.character
+
+import ru.spbau.roguelike.model.combat.{CombatCharacter, CombatStats}
 
 class PlayerCharacter private (
   override val posX: Int,
   override val posY: Int,
+  override val currentHealth: Int,
   private val stats: CombatStats,
-  private val currentHealth: Int,
   private val inventory: Inventory,
-)extends PositionalCharacter {
+) extends PositionalCharacter with CombatCharacter {
 
   def getCurrentHealth: Int = currentHealth
 
@@ -22,16 +24,16 @@ class PlayerCharacter private (
     inventory.invertIsEquippedItem(itemIndex)
   }
 
-  def reduceHealth(delta: Int): PlayerCharacter =
-    new PlayerCharacter(posX, posY, stats, Math.max(0, currentHealth - delta), inventory)
+  override def reduceHealth(byPoints: Int): CombatCharacter =
+    new PlayerCharacter(posX, posY, Math.max(0, currentHealth - byPoints), stats, inventory)
 
   override def moveTo(newX: Int, newY: Int): PlayerCharacter =
-    new PlayerCharacter(newX, newY, stats, currentHealth, inventory)
+    new PlayerCharacter(newX, newY, currentHealth, stats, inventory)
 }
 
 object PlayerCharacter {
   def apply(posX: Int, posY: Int): PlayerCharacter = {
-    val stats = CombatStats(200, 1, 1)
-    new PlayerCharacter(posX, posY, stats, stats.health, new Inventory())
+    val stats = CombatStats(100, 1, 1)
+    new PlayerCharacter(posX, posY, stats.health, stats, new Inventory())
   }
 }

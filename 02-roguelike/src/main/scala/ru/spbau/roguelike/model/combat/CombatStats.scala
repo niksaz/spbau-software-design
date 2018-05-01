@@ -1,4 +1,4 @@
-package ru.spbau.roguelike.model
+package ru.spbau.roguelike.model.combat
 
 case class CombatStats(
   var health: Int,

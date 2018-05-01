@@ -1,5 +1,9 @@
 package ru.spbau.roguelike.model
 
+import ru.spbau.roguelike.model.character._
+import ru.spbau.roguelike.model.combat.{CombatResolver, CombatStats}
+import ru.spbau.roguelike.model.terrain.TerrainMap
+
 import scala.collection.mutable
 import scala.util.Random
 
@@ -38,24 +42,43 @@ class WorldState private (
   }
 
   private def nextTimeStepWithCharacterDelta(charDeltaX: Int, charDeltaY: Int): Unit = {
-    val charNewX = character.posX + charDeltaX
-    val charNewY = character.posY + charDeltaY
-    character = if (terrainMap.isPassable(charNewX, charNewY)) {
-      character.moveTo(charNewX, charNewY)
-    } else {
-      character
+    var charNewX = character.posX + charDeltaX
+    var charNewY = character.posY + charDeltaY
+    if (!terrainMap.isPassable(charNewX, charNewY)) {
+      charNewX = character.posX
+      charNewY = character.posY
     }
-    character = character.reduceHealth(25)
-    mobs = mobs.map { mob =>
+    var wasFighting = false
+    val newMobs = mutable.ListBuffer[MobCharacter]()
+    mobs.foreach { mobInPast =>
+      var mob = mobInPast
       val mobDir = WorldState.DIRS(WorldState.generator.nextInt(4))
-      val mobNewX = mob.posX + mobDir._1
-      val mobNewY = mob.posY + mobDir._2
-      if (terrainMap.isPassable(mobNewX, mobNewY)) {
-        mob.moveTo(mobNewX, mobNewY)
+      var mobNewX = mob.posX + mobDir._1
+      var mobNewY = mob.posY + mobDir._2
+      if (!terrainMap.isPassable(mobNewX, mobNewY)) {
+        mobNewX = mob.posX
+        mobNewY = mob.posY
+      }
+      val sameFinalPos = (mobNewX, mobNewY) == (charNewX, charNewY)
+      val swappedPos =
+        (mobNewX, mobNewY) == (character.posX, character.posY) &&
+        (charNewX, charNewY) == (mob.posX, mob.posY)
+      if (sameFinalPos || swappedPos) {
+        wasFighting = true
+        val afterFightChars = WorldState.combatResolver.resolveFight(character, mob)
+        character = afterFightChars._1.asInstanceOf[PlayerCharacter]
+        mob = afterFightChars._2.asInstanceOf[MobCharacter]
       } else {
-        mob
+        mob = mob.moveTo(mobNewX, mobNewY)
+      }
+      if (mob.currentHealth > 0) {
+        newMobs.append(mob)
       }
     }
+    if (!wasFighting) {
+      character = character.moveTo(charNewX, charNewY)
+    }
+    mobs = newMobs.toList
     notifyChangeListeners()
   }
 
@@ -72,6 +95,7 @@ object WorldState {
   private val DIRS = List((1, 0), (-1, 0), (0, 1), (0, -1))
 
   private val generator: Random = new Random()
+  private val combatResolver: CombatResolver = CombatResolver()
 
   def apply(width: Int, height: Int): WorldState = {
     val terrainMap = new TerrainMap(width, height)

@@ -1,4 +1,6 @@
-package ru.spbau.roguelike.model
+package ru.spbau.roguelike.model.character
+
+import ru.spbau.roguelike.model.combat.CombatStats
 
 sealed trait CharacterItemSlot {
   val name: String

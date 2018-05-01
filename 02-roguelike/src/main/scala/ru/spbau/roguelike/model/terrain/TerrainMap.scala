@@ -1,4 +1,4 @@
-package ru.spbau.roguelike.model
+package ru.spbau.roguelike.model.terrain
 
 import scala.util.Random
 

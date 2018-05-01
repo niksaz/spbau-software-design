@@ -5,7 +5,9 @@ import org.codetome.zircon.api.color.ANSITextColor
 import org.codetome.zircon.api.component.builder.{HeaderBuilder, LabelBuilder, PanelBuilder}
 import org.codetome.zircon.api.terminal.Terminal
 import org.codetome.zircon.api.{Position, Size}
-import ru.spbau.roguelike.model.{CombatStats, InventoryItem, PlayerCharacter, WorldState}
+import ru.spbau.roguelike.model.WorldState
+import ru.spbau.roguelike.model.character.{InventoryItem, PlayerCharacter}
+import ru.spbau.roguelike.model.combat.CombatStats
 import ru.spbau.roguelike.view.AbstractScreenController
 
 import scala.collection.mutable

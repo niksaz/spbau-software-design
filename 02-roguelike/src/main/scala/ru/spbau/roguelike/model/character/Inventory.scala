@@ -1,4 +1,6 @@
-package ru.spbau.roguelike.model
+package ru.spbau.roguelike.model.character
+
+import ru.spbau.roguelike.model.combat.CombatStats
 
 case class InventoryItem(item: Item, var isEquipped: Boolean)
 
