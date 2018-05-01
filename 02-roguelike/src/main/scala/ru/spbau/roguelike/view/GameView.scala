@@ -7,7 +7,7 @@ import org.codetome.zircon.api.terminal.Terminal
 import ru.spbau.roguelike.model.{WorldState, WorldStateChangeListener}
 import ru.spbau.roguelike.view.map.{MapScreenController, MapScreenListener}
 import ru.spbau.roguelike.view.inventory.{InventoryScreenController, InventoryScreenListener}
-import ru.spbau.roguelike.view.lost.LostScreenController
+import ru.spbau.roguelike.view.lost.{LostScreenController, LostScreenListener}
 
 /**
   * An entity that creates and control the flow of the screens behind
@@ -30,14 +30,15 @@ class GameView(
       .title(GameView.GAME_VIEW_TITLE)
       .build()
 
-  private val mapScreenController = new MapScreenController(worldState, terminal)
-  private val mapScreenListener = new MapScreenListener(worldState, this)
-
   private val inventoryScreenController = new InventoryScreenController(worldState, terminal)
   private val inventoryScreenListener =
     new InventoryScreenListener(worldState, this, inventoryScreenController)
 
+  private val mapScreenController = new MapScreenController(worldState, terminal)
+  private val mapScreenListener = new MapScreenListener(worldState, this)
+
   private val lostScreenController = new LostScreenController(worldState, terminal)
+  private val lostScreenListener = new LostScreenListener(worldState, this)
 
   private var gameViewState: GameViewState = OnMapState
 
@@ -47,7 +48,7 @@ class GameView(
       gameViewState match {
         case OnMapState => mapScreenListener.accept(input)
         case InInventoryState => inventoryScreenListener.accept(input)
-        case GameLostState =>
+        case GameLostState => lostScreenListener.accept(input)
       }
     }
   }

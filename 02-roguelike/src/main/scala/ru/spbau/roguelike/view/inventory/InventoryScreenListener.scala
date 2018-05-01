@@ -5,7 +5,7 @@ import org.codetome.zircon.api.input.{Input, InputType}
 import ru.spbau.roguelike.model.WorldState
 import ru.spbau.roguelike.view.{AbstractScreenListener, GameView, OnMapState}
 
-/** The keyboard listener when the players is on the inventory screen. */
+/** The keyboard listener when the player is in the inventory. */
 class InventoryScreenListener(
   worldState: WorldState,
   gameView: GameView,
@@ -25,8 +25,8 @@ class InventoryScreenListener(
         case InputType.Enter =>
           InventoryScreenListener.logger.info("Enter pressed")
           worldState.equipItemWithIndex(inventoryScreenController.getInventoryPosition)
-        case InputType.Character => keyStroke.getCharacter.toLower match {
-          case 'i' =>
+        case InputType.Character => keyStroke.getCharacter.toUpper match {
+          case 'I' =>
             InventoryScreenListener.logger.info("'I' pressed")
             gameView.changeGameViewStateTo(OnMapState)
           case _ =>

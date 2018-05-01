@@ -5,7 +5,7 @@ import org.codetome.zircon.api.input.{Input, InputType}
 import ru.spbau.roguelike.model.WorldState
 import ru.spbau.roguelike.view.{AbstractScreenListener, GameView, InInventoryState, GameLostState}
 
-/** The keyboard listener when the players is on the map screen. */
+/** The keyboard listener when the player is on the map screen. */
 class MapScreenListener(
   worldState: WorldState,
   gameView: GameView
@@ -27,11 +27,11 @@ class MapScreenListener(
         case InputType.ArrowRight =>
           MapScreenListener.logger.info("ArrowRight pressed")
           worldState.moveCharacterRight()
-        case InputType.Character => keyStroke.getCharacter.toLower match {
-          case 'i' =>
+        case InputType.Character => keyStroke.getCharacter.toUpper match {
+          case 'I' =>
             MapScreenListener.logger.info("'I' pressed")
             gameView.changeGameViewStateTo(InInventoryState)
-          case 'q' =>
+          case 'Q' =>
             MapScreenListener.logger.info("'Q' pressed")
             System.exit(0)
           case _ =>
