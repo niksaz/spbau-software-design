@@ -5,6 +5,7 @@ import scala.util.Random
 /**
   * Represents the terrain of the world's map.
   * Constructor generates a random map of given width and height with walls around the perimeter.
+  * It will contain at least one passable cell.
   */
 class TerrainMap(val width: Int, val height: Int) {
   private val entities = Array.ofDim[TerrainMapEntity](width, height)
@@ -20,6 +21,15 @@ class TerrainMap(val width: Int, val height: Int) {
             if (generator.nextInt(4) == 0) WallMapEntity else FloorMapEntity
           }
       }
+    }
+    val hasPassableCell =
+      entities
+        .map(_.foldLeft(false) {case (hasPassable, entity) => hasPassable || entity.isPassable })
+        .foldLeft(false)(_ || _)
+    if (!hasPassableCell) {
+      val column = 1 + generator.nextInt(width - 2)
+      val row = 1 + generator.nextInt(height - 2)
+      entities(column)(row) = FloorMapEntity
     }
   }
 

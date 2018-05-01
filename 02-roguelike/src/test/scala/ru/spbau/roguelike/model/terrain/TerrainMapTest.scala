@@ -4,6 +4,12 @@ import org.scalatest.FunSuite
 
 class TerrainMapTest extends FunSuite {
 
+  test("containsOnePassableCell") {
+    val size = 3
+    val terrainMap = new TerrainMap(size, size)
+    assert(terrainMap.isPassable(1, 1))
+  }
+
   test("testWallsAround") {
     val size = 10
     val terrainMap = new TerrainMap(size, size)

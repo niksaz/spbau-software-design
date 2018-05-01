@@ -9,6 +9,7 @@ import ru.spbau.roguelike.model.terrain.TerrainMap
 import scala.collection.mutable
 import scala.util.Random
 
+/** Encapsulates the state of game's model. */
 class WorldState private (
   private val terrainMap: TerrainMap,
   private var character: PlayerCharacter,
@@ -18,31 +19,60 @@ class WorldState private (
 
   private var lastTimeStepMessage = "The world has been created."
 
+  /** Returns the message of that happened during last time step. */
   def getLastTimeStepMessage: String = lastTimeStepMessage
 
+  /** Returns the [[TerrainMap]] in the current state. */
   def getTerrainMap: TerrainMap = terrainMap
 
+  /** Returns the [[PlayerCharacter]] in the current state. */
   def getCharacter: PlayerCharacter = character
 
+  /** Returns the [[MobCharacter]]s in the current state. */
   def getMobs: List[MobCharacter] = mobs
 
+  /** Subscribes [[WorldStateChangeListener]] for further updates of the state. */
+  def addChangeListener(changeListener: WorldStateChangeListener): Unit = {
+    changeListeners.append(changeListener)
+  }
+
+  /**
+    * Asks the model to equip the state's character item with the given index.
+    * Notifies the listeners after the update.
+    */
   def equipItemWithIndex(itemIndex: Int): Unit = {
     character.invertIsEquippedItemWithIndex(itemIndex)
     notifyChangeListeners()
   }
 
+  /**
+    * Makes the character move up.
+    * Process the next time step and notifies the listeners after the update.
+    */
   def moveCharacterUp(): Unit = {
     nextTimeStepWithCharacterDelta((0, -1))
   }
 
+  /**
+    * Makes the character move down.
+    * Process the next time step and notifies the listeners after the update.
+    */
   def moveCharacterDown(): Unit = {
     nextTimeStepWithCharacterDelta((0, 1))
   }
 
+  /**
+    * Makes the character move left.
+    * Process the next time step and notifies the listeners after the update.
+    */
   def moveCharacterLeft(): Unit = {
     nextTimeStepWithCharacterDelta((-1, 0))
   }
 
+  /**
+    * Makes the character move right.
+    * Process the next time step and notifies the listeners after the update.
+    */
   def moveCharacterRight(): Unit = {
     nextTimeStepWithCharacterDelta((1, 0))
   }
@@ -104,11 +134,7 @@ class WorldState private (
     if (terrainMap.isPassable(newPosX, newPosY)) (newPosX, newPosY) else (posX, posY)
   }
 
-  def addChangeListener(changeListener: WorldStateChangeListener): Unit = {
-    changeListeners.append(changeListener)
-  }
-
-  def notifyChangeListeners(): Unit = {
+  private def notifyChangeListeners(): Unit = {
     changeListeners.foreach(_.worldStateUpdated())
   }
 }
@@ -117,25 +143,32 @@ object WorldState {
   private val logger = Logger(classOf[WorldState])
 
   private val DIRS = List((1, 0), (-1, 0), (0, 1), (0, -1))
-  private val MOBS_TO_SPAWN = 10
+  private val DEFAULT_MOBS_TO_SPAWN = 10
 
   private val generator: Random = new Random()
   private val dropItemGenerator = DropItemGenerator
   private val combatResolver: CombatResolver = CombatResolver()
 
-  def apply(width: Int, height: Int): WorldState = {
+  /**
+    * Creates [[WorldState]] with the underlying [[TerrainMap]] of the given size.
+    * Randomly places the [[PlayerCharacter]] and some [[MobCharacter]].
+    */
+  def apply(width: Int, height: Int): WorldState =
+    apply(width, height, DEFAULT_MOBS_TO_SPAWN)
+
+  private[model] def apply(width: Int, height: Int, mobsToSpawn: Int): WorldState = {
     val terrainMap = new TerrainMap(width, height)
     val (characterX, characterY) = generatePassablePosition(terrainMap)
     val character = PlayerCharacter(characterX, characterY)
     val mobs = mutable.ListBuffer[MobCharacter]()
-    Range(0, MOBS_TO_SPAWN).foreach { _ =>
+    Range(0, mobsToSpawn).foreach { _ =>
       val (mobX, mobY) = generatePassablePosition(terrainMap)
       mobs.append(MobCharacter(mobX, mobY))
     }
     new WorldState(terrainMap, character, mobs.toList)
   }
 
-  def generatePassablePosition(terrainMap: TerrainMap): (Int, Int) = {
+  private def generatePassablePosition(terrainMap: TerrainMap): (Int, Int) = {
     var posX: Int = -1
     var posY: Int = -1
     do {
