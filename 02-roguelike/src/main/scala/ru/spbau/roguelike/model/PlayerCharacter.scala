@@ -22,6 +22,9 @@ class PlayerCharacter private (
     inventory.invertIsEquippedItem(itemIndex)
   }
 
+  def reduceHealth(delta: Int): PlayerCharacter =
+    new PlayerCharacter(posX, posY, stats, Math.max(0, currentHealth - delta), inventory)
+
   override def moveTo(newX: Int, newY: Int): PlayerCharacter =
     new PlayerCharacter(newX, newY, stats, currentHealth, inventory)
 }

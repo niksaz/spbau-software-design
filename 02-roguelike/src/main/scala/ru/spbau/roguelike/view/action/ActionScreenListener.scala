@@ -2,7 +2,7 @@ package ru.spbau.roguelike.view.action
 
 import org.codetome.zircon.api.input.{Input, InputType}
 import ru.spbau.roguelike.model.WorldState
-import ru.spbau.roguelike.view.{AbstractScreenListener, GameView, InInventoryState}
+import ru.spbau.roguelike.view.{AbstractScreenListener, InLostState, GameView, InInventoryState}
 
 class ActionScreenListener(
   worldState: WorldState,
@@ -30,6 +30,9 @@ class ActionScreenListener(
           case _ =>
         }
         case _ =>
+      }
+      if (worldState.getCharacter.getCurrentHealth == 0) {
+        gameView.changeGameViewStateTo(InLostState)
       }
     }
   }

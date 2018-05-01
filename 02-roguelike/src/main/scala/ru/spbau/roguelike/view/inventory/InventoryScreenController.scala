@@ -1,9 +1,8 @@
 package ru.spbau.roguelike.view.inventory
 
-import org.codetome.zircon.api.builder.{LayerBuilder, TextCharacterBuilder}
+import org.codetome.zircon.api.builder.TextCharacterBuilder
 import org.codetome.zircon.api.color.ANSITextColor
 import org.codetome.zircon.api.component.builder.{HeaderBuilder, LabelBuilder, PanelBuilder}
-import org.codetome.zircon.api.graphics.Layer
 import org.codetome.zircon.api.terminal.Terminal
 import org.codetome.zircon.api.{Position, Size}
 import ru.spbau.roguelike.model.{CombatStats, InventoryItem, PlayerCharacter, WorldState}
@@ -15,12 +14,6 @@ class InventoryScreenController(
   worldState: WorldState,
   terminal: Terminal
 ) extends AbstractScreenController(worldState, terminal) {
-
-  private val overlay: Layer =
-    new LayerBuilder()
-      .size(screen.getBoundableSize)
-      .filler(TextCharacterBuilder.EMPTY)
-      .build
 
   private val healthHeader =
     LabelBuilder.newBuilder()

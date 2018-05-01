@@ -45,6 +45,7 @@ class WorldState private (
     } else {
       character
     }
+    character = character.reduceHealth(25)
     mobs = mobs.map { mob =>
       val mobDir = WorldState.DIRS(WorldState.generator.nextInt(4))
       val mobNewX = mob.posX + mobDir._1

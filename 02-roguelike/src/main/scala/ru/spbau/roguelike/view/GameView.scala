@@ -7,6 +7,7 @@ import org.codetome.zircon.api.terminal.Terminal
 import ru.spbau.roguelike.model.{WorldState, WorldStateChangeListener}
 import ru.spbau.roguelike.view.action.{ActionScreenController, ActionScreenListener}
 import ru.spbau.roguelike.view.inventory.{InventoryScreenController, InventoryScreenListener}
+import ru.spbau.roguelike.view.lost.LostScreenController
 
 class GameView(worldState: WorldState) extends WorldStateChangeListener {
 
@@ -27,6 +28,8 @@ class GameView(worldState: WorldState) extends WorldStateChangeListener {
   private val inventoryScreenListener =
     new InventoryScreenListener(worldState, this, inventoryScreenController)
 
+  private val lostScreenController = new LostScreenController(worldState, terminal)
+
   private var gameViewState: GameViewState = InActionState
 
   {
@@ -35,6 +38,7 @@ class GameView(worldState: WorldState) extends WorldStateChangeListener {
       gameViewState match {
         case InActionState => actionScreenListener.accept(input)
         case InInventoryState => inventoryScreenListener.accept(input)
+        case InLostState =>
         case null =>
       }
     }
@@ -56,6 +60,7 @@ class GameView(worldState: WorldState) extends WorldStateChangeListener {
   def redrawCurrentScreen(): Unit = gameViewState match {
     case InActionState => actionScreenController.redraw()
     case InInventoryState => inventoryScreenController.redraw()
+    case InLostState => lostScreenController.redraw()
     case null =>
   }
 }

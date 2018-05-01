@@ -1,10 +1,9 @@
 package ru.spbau.roguelike.view.action
 
 import org.codetome.zircon.api.Position
-import org.codetome.zircon.api.builder.{LayerBuilder, TextCharacterBuilder}
+import org.codetome.zircon.api.builder.TextCharacterBuilder
 import org.codetome.zircon.api.color.ANSITextColor
 import org.codetome.zircon.api.component.builder.{HeaderBuilder, LabelBuilder}
-import org.codetome.zircon.api.graphics.Layer
 import org.codetome.zircon.api.terminal.Terminal
 import ru.spbau.roguelike.model.{Floor, PlayerCharacter, Wall, WorldState}
 import ru.spbau.roguelike.view.AbstractScreenController
@@ -13,12 +12,6 @@ class ActionScreenController(
   worldState: WorldState,
   terminal: Terminal
 ) extends AbstractScreenController(worldState, terminal) {
-
-  private val overlay: Layer =
-    new LayerBuilder()
-      .size(screen.getBoundableSize)
-      .filler(TextCharacterBuilder.EMPTY)
-      .build
 
   private val healthHeader =
     LabelBuilder.newBuilder()
