@@ -1,13 +1,17 @@
 package ru.spbau.roguelike.model.terrain
 
+/** Represents an entity for a [[TerrainMap]]. */
 sealed trait TerrainMapEntity {
+  /** Returns whether this type of terrain is passable by characters. */
   def isPassable: Boolean
 }
 
-case object Wall extends TerrainMapEntity {
+/** Represents a wall cell on the map. */
+case object WallMapEntity extends TerrainMapEntity {
   override def isPassable: Boolean = false
 }
 
-case object Floor extends TerrainMapEntity {
+/** Represents a floor cell on the map. */
+case object FloorMapEntity extends TerrainMapEntity {
   override def isPassable: Boolean = true
 }

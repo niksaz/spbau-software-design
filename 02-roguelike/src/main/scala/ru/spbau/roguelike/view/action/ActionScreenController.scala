@@ -7,7 +7,7 @@ import org.codetome.zircon.api.component.builder.{HeaderBuilder, LabelBuilder}
 import org.codetome.zircon.api.terminal.Terminal
 import ru.spbau.roguelike.model.WorldState
 import ru.spbau.roguelike.model.characters.PlayerCharacter
-import ru.spbau.roguelike.model.terrain.{Floor, Wall}
+import ru.spbau.roguelike.model.terrain.{FloorMapEntity, WallMapEntity}
 import ru.spbau.roguelike.view.AbstractScreenController
 
 class ActionScreenController(
@@ -70,8 +70,8 @@ class ActionScreenController(
         val terrainEntity =
           terrainMap.getEntityAt(column + sectorX * viewWidth, row + sectorY * viewHeight)
         val charToSet = terrainEntity match {
-          case Wall => '#'
-          case Floor => '.'
+          case WallMapEntity => '#'
+          case FloorMapEntity => '.'
         }
         overlay.setCharacterAt(Position.of(column, row), charToSet)
         overlay.resetColorsAndModifiers()
