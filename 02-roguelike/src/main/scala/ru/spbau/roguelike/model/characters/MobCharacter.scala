@@ -2,7 +2,8 @@ package ru.spbau.roguelike.model.characters
 
 import ru.spbau.roguelike.model.combat.{CombatCharacter, CombatStats}
 
-class MobCharacter(
+/** Represents a monster on a map. Has [[CombatStats]] from the spawn that do not change. */
+class MobCharacter private (
   override val posX: Int,
   override val posY: Int,
   override val currentHealth: Int,
@@ -14,13 +15,14 @@ class MobCharacter(
   override def moveTo(newX: Int, newY: Int): MobCharacter =
     new MobCharacter(newX, newY, currentHealth, stats)
 
-  override def reduceHealth(byPoints: Int): CombatCharacter =
+  override def reduceHealth(byPoints: Int): MobCharacter =
     new MobCharacter(posX, posY, Math.max(0, currentHealth - byPoints), stats)
 }
 
 object MobCharacter {
-  def apply(posX: Int, posY: Int): MobCharacter = {
-    val stats = CombatStats(10, 0, 2)
-    new MobCharacter(posX, posY, stats.health, stats)
-  }
+  val defaultStats: CombatStats = CombatStats(10, 0, 2)
+
+  /** Creates a [[MobCharacter]] with [[defaultStats]]. */
+  def apply(posX: Int, posY: Int): MobCharacter =
+    new MobCharacter(posX, posY, defaultStats.health, defaultStats)
 }

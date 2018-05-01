@@ -52,7 +52,7 @@ class WorldState private (
     WorldState.logger.info(s"Character state is $character")
     lastTimeStepMessage = ""
     val (charNewX, charNewY) = tryToMoveByDelta(character.posX, character.posY, delta)
-    var wasFighting = false
+    var wasInCombat = false
     val newMobs = mutable.ListBuffer[MobCharacter]()
     mobs.foreach { mobInPast =>
       var mob = mobInPast
@@ -62,10 +62,10 @@ class WorldState private (
       val swappedPos =
         (mobNewX, mobNewY) == (character.posX, character.posY) &&
         (charNewX, charNewY) == (mob.posX, mob.posY)
-      val shouldFightOccur = sameFinalPos || swappedPos
-      if (shouldFightOccur) {
+      val shouldCombatOccur = sameFinalPos || swappedPos
+      if (shouldCombatOccur) {
         WorldState.logger.info(s"Fighting with mob")
-        val afterFightChars = WorldState.combatResolver.resolveFight(character, mob)
+        val afterFightChars = WorldState.combatResolver.resolveCombat(character, mob)
         character = afterFightChars._1.asInstanceOf[PlayerCharacter]
         mob = afterFightChars._2.asInstanceOf[MobCharacter]
       } else {
@@ -73,7 +73,7 @@ class WorldState private (
           s"Mob moving from (${mob.posX}, ${mob.posY}) to ($mobNewX, $mobNewY).")
         mob = mob.moveTo(mobNewX, mobNewY)
       }
-      wasFighting |= shouldFightOccur
+      wasInCombat |= shouldCombatOccur
       if (mob.currentHealth == 0) {
         val droppedItem = WorldState.dropItemGenerator.generateDropItem(character, mob)
         lastTimeStepMessage = s"You've defeated a mob!${
@@ -84,12 +84,12 @@ class WorldState private (
         }
       } else {
         newMobs.append(mob)
-        if (shouldFightOccur) {
+        if (shouldCombatOccur) {
           lastTimeStepMessage = s"You've fought a mob. It has ${mob.currentHealth} HP left."
         }
       }
     }
-    if (!wasFighting) {
+    if (!wasInCombat) {
       WorldState.logger.info(
         s"Character moving from (${character.posX}, ${character.posY}) to ($charNewX, $charNewY).")
       character = character.moveTo(charNewX, charNewY)

@@ -3,6 +3,7 @@ package ru.spbau.roguelike.model.characters
 import ru.spbau.roguelike.model.combat.{CombatCharacter, CombatStats}
 import ru.spbau.roguelike.model.items.Item
 
+/** Represents the player's character on a map. Has an [[Inventory]]. */
 class PlayerCharacter private (
   override val posX: Int,
   override val posY: Int,
@@ -15,18 +16,22 @@ class PlayerCharacter private (
 
   def getCurrentHealth: Int = currentHealth
 
-  def getStats: CombatStats = stats + inventory.getStats
+  /** Returns the player's [[InventoryItem]]s. */
+  def getItems: List[InventoryItem] = inventory.items
 
-  def getItems: List[InventoryItem] = inventory.getItems
-
+  /** Returns a character with the item added to the character's inventory. */
   def addItem(item: Item): PlayerCharacter = {
     val newInventory = inventory.addItem(item)
     new PlayerCharacter(posX, posY, currentHealth, stats, newInventory)
   }
 
+  /** Inverts the state of index-th item in the character's inventory. */
   def invertIsEquippedItemWithIndex(itemIndex: Int): Unit = {
     inventory.invertIsEquippedItem(itemIndex)
   }
+
+  /** Returns the character's [[CombatStats]] which are combined from base and items' stats. */
+  override def getStats: CombatStats = stats + inventory.getStats
 
   override def reduceHealth(byPoints: Int): CombatCharacter =
     new PlayerCharacter(posX, posY, Math.max(0, currentHealth - byPoints), stats, inventory)
@@ -36,8 +41,9 @@ class PlayerCharacter private (
 }
 
 object PlayerCharacter {
-  def apply(posX: Int, posY: Int): PlayerCharacter = {
-    val stats = CombatStats(100, 0, 1)
-    new PlayerCharacter(posX, posY, stats.health, stats, Inventory())
-  }
+  val defaultStats: CombatStats = CombatStats(100, 0, 1)
+
+  /** Creates a [[PlayerCharacter]] with [[defaultStats]]. */
+  def apply(posX: Int, posY: Int): PlayerCharacter =
+    new PlayerCharacter(posX, posY, defaultStats.health, defaultStats, Inventory())
 }

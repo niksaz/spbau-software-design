@@ -2,10 +2,15 @@ package ru.spbau.roguelike.model.combat
 
 import com.typesafe.scalalogging.Logger
 
-object CombatResolverImpl extends CombatResolver {
+/** One-round [[CombatResolver]]. */
+object OneRoundCombatResolver extends CombatResolver {
   private val logger = Logger("ru.spbau.roguelike.model.combat.CombatResolverImpl")
 
-  override def resolveFight(
+  /**
+    * Deals the damage done in one round by [[CombatCharacter]] based on their [[CombatStats]].
+    * Returns [[CombatCharacter]]s after the combat.
+    */
+  override def resolveCombat(
     firstCharacter: CombatCharacter, secondCharacter: CombatCharacter
   ): (CombatCharacter, CombatCharacter) = {
     val firstCharHealthReduced =
