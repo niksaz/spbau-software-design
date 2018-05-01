@@ -3,7 +3,7 @@ package ru.spbau.roguelike.view.inventory
 import com.typesafe.scalalogging.Logger
 import org.codetome.zircon.api.input.{Input, InputType}
 import ru.spbau.roguelike.model.WorldState
-import ru.spbau.roguelike.view.{AbstractScreenListener, GameView, InActionState}
+import ru.spbau.roguelike.view.{AbstractScreenListener, GameView, OnMapState}
 
 /** The keyboard listener when the players is on the inventory screen. */
 class InventoryScreenListener(
@@ -28,7 +28,7 @@ class InventoryScreenListener(
         case InputType.Character => keyStroke.getCharacter.toLower match {
           case 'i' =>
             InventoryScreenListener.logger.info("'I' pressed")
-            gameView.changeGameViewStateTo(InActionState)
+            gameView.changeGameViewStateTo(OnMapState)
           case _ =>
         }
         case _ =>

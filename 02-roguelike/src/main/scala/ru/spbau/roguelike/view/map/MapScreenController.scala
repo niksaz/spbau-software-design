@@ -1,4 +1,4 @@
-package ru.spbau.roguelike.view.action
+package ru.spbau.roguelike.view.map
 
 import org.codetome.zircon.api.Position
 import org.codetome.zircon.api.builder.TextCharacterBuilder
@@ -11,7 +11,7 @@ import ru.spbau.roguelike.model.terrain.{FloorMapEntity, WallMapEntity}
 import ru.spbau.roguelike.view.AbstractScreenController
 
 /** The controller of the screen that is shown when the player walks around the map. */
-class ActionScreenController(
+class MapScreenController(
   worldState: WorldState,
   terminal: Terminal
 ) extends AbstractScreenController(worldState, terminal) {

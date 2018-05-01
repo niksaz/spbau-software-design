@@ -5,7 +5,7 @@ import org.codetome.zircon.api.builder.TerminalBuilder
 import org.codetome.zircon.api.resource.CP437TilesetResource
 import org.codetome.zircon.api.terminal.Terminal
 import ru.spbau.roguelike.model.{WorldState, WorldStateChangeListener}
-import ru.spbau.roguelike.view.action.{ActionScreenController, ActionScreenListener}
+import ru.spbau.roguelike.view.map.{MapScreenController, MapScreenListener}
 import ru.spbau.roguelike.view.inventory.{InventoryScreenController, InventoryScreenListener}
 import ru.spbau.roguelike.view.lost.LostScreenController
 
@@ -30,8 +30,8 @@ class GameView(
       .title(GameView.GAME_VIEW_TITLE)
       .build()
 
-  private val actionScreenController = new ActionScreenController(worldState, terminal)
-  private val actionScreenListener = new ActionScreenListener(worldState, this)
+  private val mapScreenController = new MapScreenController(worldState, terminal)
+  private val mapScreenListener = new MapScreenListener(worldState, this)
 
   private val inventoryScreenController = new InventoryScreenController(worldState, terminal)
   private val inventoryScreenListener =
@@ -39,15 +39,15 @@ class GameView(
 
   private val lostScreenController = new LostScreenController(worldState, terminal)
 
-  private var gameViewState: GameViewState = InActionState
+  private var gameViewState: GameViewState = OnMapState
 
   {
     worldState.addChangeListener(this)
     terminal.onInput { input =>
       gameViewState match {
-        case InActionState => actionScreenListener.accept(input)
+        case OnMapState => mapScreenListener.accept(input)
         case InInventoryState => inventoryScreenListener.accept(input)
-        case InLostState =>
+        case GameLostState =>
       }
     }
   }
@@ -67,12 +67,12 @@ class GameView(
   }
 
   private def redrawCurrentScreen(): Unit = gameViewState match {
-    case InActionState => actionScreenController.redraw()
+    case OnMapState => mapScreenController.redraw()
     case InInventoryState => inventoryScreenController.redraw()
-    case InLostState => lostScreenController.redraw()
+    case GameLostState => lostScreenController.redraw()
   }
 }
 
-object GameView {
+private object GameView {
   private val GAME_VIEW_TITLE = "Roguelike"
 }
