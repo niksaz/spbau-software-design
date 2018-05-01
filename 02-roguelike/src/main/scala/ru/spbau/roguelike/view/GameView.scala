@@ -9,6 +9,13 @@ import ru.spbau.roguelike.view.action.{ActionScreenController, ActionScreenListe
 import ru.spbau.roguelike.view.inventory.{InventoryScreenController, InventoryScreenListener}
 import ru.spbau.roguelike.view.lost.LostScreenController
 
+/**
+  * An entity that creates and control the flow of the screens behind
+  * [[AbstractScreenController]]s.
+  * @param visibleMapWidth the width of model's map that should be visible to a user
+  * @param visibleMapHeight the height of model's map that should be visible to a user
+  * @param worldState the state which should be used for getting and updating the game's model
+  */
 class GameView(
   visibleMapWidth: Int,
   visibleMapHeight: Int,
@@ -45,20 +52,21 @@ class GameView(
     }
   }
 
+  /** Displays the current screen. */
+  def display(): Unit = {
+    redrawCurrentScreen()
+  }
+
   override def worldStateUpdated(): Unit = {
     redrawCurrentScreen()
   }
 
-  def show(): Unit = {
-    redrawCurrentScreen()
-  }
-
-  def changeGameViewStateTo(gameViewState: GameViewState): Unit = {
+  private[view] def changeGameViewStateTo(gameViewState: GameViewState): Unit = {
     this.gameViewState = gameViewState
     redrawCurrentScreen()
   }
 
-  def redrawCurrentScreen(): Unit = gameViewState match {
+  private def redrawCurrentScreen(): Unit = gameViewState match {
     case InActionState => actionScreenController.redraw()
     case InInventoryState => inventoryScreenController.redraw()
     case InLostState => lostScreenController.redraw()

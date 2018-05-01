@@ -12,6 +12,7 @@ import ru.spbau.roguelike.view.AbstractScreenController
 
 import scala.collection.mutable
 
+/** The controller of the screen that is shown when the player looks through the inventory. */
 class InventoryScreenController(
   worldState: WorldState,
   terminal: Terminal
@@ -66,9 +67,11 @@ class InventoryScreenController(
     screen.pushLayer(overlay)
   }
 
-  def getInventoryPosition: Int = inventoryPosition
+  /** Returns the inventory selection's index. */
+  private[inventory] def getInventoryPosition: Int = inventoryPosition
 
-  def moveUpInInventory(): Unit = {
+  /** Moves the inventory selection up. */
+  private[inventory] def moveUpInInventory(): Unit = {
     inventoryPosition -= 1
     if (inventoryPosition < 0) {
       inventoryPosition += worldState.getCharacter.getItems.size
@@ -76,7 +79,8 @@ class InventoryScreenController(
     redraw()
   }
 
-  def moveDownInInventory(): Unit = {
+  /** Moves the inventory selection downs. */
+  private[inventory] def moveDownInInventory(): Unit = {
     inventoryPosition += 1
     if (inventoryPosition == worldState.getCharacter.getItems.size) {
       inventoryPosition = 0
@@ -164,7 +168,7 @@ class InventoryScreenController(
   }
 }
 
-object InventoryScreenController {
+private object InventoryScreenController {
   private def inventoryItemToString(inventoryItem: InventoryItem): String = {
     val item = inventoryItem.item
     val inventoryItemDesc = new mutable.StringBuilder()

@@ -5,6 +5,7 @@ import org.codetome.zircon.api.input.{Input, InputType}
 import ru.spbau.roguelike.model.WorldState
 import ru.spbau.roguelike.view.{AbstractScreenListener, GameView, InActionState}
 
+/** The keyboard listener when the players is on the inventory screen. */
 class InventoryScreenListener(
   worldState: WorldState,
   gameView: GameView,
@@ -36,6 +37,6 @@ class InventoryScreenListener(
   }
 }
 
-object InventoryScreenListener {
+private object InventoryScreenListener {
   private val logger = Logger(classOf[InventoryScreenListener])
 }

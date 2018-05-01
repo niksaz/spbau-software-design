@@ -4,9 +4,11 @@ import com.typesafe.scalalogging.Logger
 import ru.spbau.roguelike.model.WorldState
 import ru.spbau.roguelike.view.GameView
 
+/** An entrance to the game startup. */
 object GameRunner {
   private val logger = Logger("ru.spbau.roguelike.GameRunner")
 
+  /** Starts the game. */
   def main(args: Array[String]): Unit = {
     Thread.setDefaultUncaughtExceptionHandler((t: Thread, e: Throwable) => {
       logger.error(e.toString)
@@ -22,6 +24,6 @@ object GameRunner {
 
     val gameView = new GameView(width, height, worldState)
 
-    gameView.show()
+    gameView.display()
   }
 }

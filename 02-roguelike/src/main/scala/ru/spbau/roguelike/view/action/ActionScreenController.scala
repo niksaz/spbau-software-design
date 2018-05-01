@@ -10,6 +10,7 @@ import ru.spbau.roguelike.model.characters.PlayerCharacter
 import ru.spbau.roguelike.model.terrain.{FloorMapEntity, WallMapEntity}
 import ru.spbau.roguelike.view.AbstractScreenController
 
+/** The controller of the screen that is shown when the player walks around the map. */
 class ActionScreenController(
   worldState: WorldState,
   terminal: Terminal

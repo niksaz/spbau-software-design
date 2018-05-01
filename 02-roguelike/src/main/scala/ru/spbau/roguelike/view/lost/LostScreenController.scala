@@ -8,6 +8,7 @@ import org.codetome.zircon.api.{Position, Size}
 import ru.spbau.roguelike.model.WorldState
 import ru.spbau.roguelike.view.AbstractScreenController
 
+/** The controller of the screen that is shown when the player has no health. */
 class LostScreenController(
   worldState: WorldState,
   terminal: Terminal

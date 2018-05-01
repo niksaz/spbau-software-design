@@ -5,6 +5,7 @@ import org.codetome.zircon.api.input.{Input, InputType}
 import ru.spbau.roguelike.model.WorldState
 import ru.spbau.roguelike.view.{AbstractScreenListener, GameView, InInventoryState, InLostState}
 
+/** The keyboard listener when the players is on the map screen. */
 class ActionScreenListener(
   worldState: WorldState,
   gameView: GameView
@@ -44,6 +45,6 @@ class ActionScreenListener(
   }
 }
 
-object ActionScreenListener {
+private object ActionScreenListener {
   private val logger = Logger(classOf[ActionScreenListener])
 }
