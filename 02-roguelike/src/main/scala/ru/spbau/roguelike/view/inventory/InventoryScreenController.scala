@@ -16,9 +16,6 @@ class InventoryScreenController(
   terminal: Terminal
 ) extends AbstractScreenController(worldState, terminal) {
 
-  private val height = worldState.getWorldMap.height
-  private val width = worldState.getWorldMap.width
-
   private val overlay: Layer =
     new LayerBuilder()
       .size(screen.getBoundableSize)
@@ -27,19 +24,19 @@ class InventoryScreenController(
 
   private val healthHeader =
     LabelBuilder.newBuilder()
-      .position(Position.of(0, height + 2))
+      .position(Position.of(0, height - 2))
       .text("Health:")
       .build()
 
   private val armorHeader =
     HeaderBuilder.newBuilder()
-      .position(Position.of(width / 3 + 4, height + 2))
+      .position(Position.of(width / 3 + 4, height - 2))
       .text("Armor:")
       .build()
 
   private val attackHeader =
     HeaderBuilder.newBuilder()
-      .position(Position.of(width / 3 * 2 + 4, height + 2))
+      .position(Position.of(width / 3 * 2 + 4, height - 2))
       .text("Attack:")
       .build()
 
@@ -48,12 +45,12 @@ class InventoryScreenController(
       .wrapWithBox()
       .title("Inventory")
       .wrapWithShadow()
-      .size(Size.of(width - 2, height))
+      .size(Size.of(width - 2, height - 4))
       .position(Position.OFFSET_1x1)
       .build()
 
-  private val maxItemsToShow: Int = panel.getEffectiveSize.getRows / 2
-  private var inventoryPosition: Int = 0
+  private val maxItemsToShow = panel.getEffectiveSize.getRows / 2
+  private var inventoryPosition = 0
   private var indexesRange = Range(0, 0)
 
   {
@@ -66,12 +63,11 @@ class InventoryScreenController(
 
     val inventoryHeader =
       HeaderBuilder.newBuilder()
-        .position(Position.of(0, height + 3))
-        .text("[I]nventory")
+        .position(Position.of(0, height - 1))
+        .text("[I] to return")
         .build()
 
     screen.addComponent(inventoryHeader)
-
     screen.pushLayer(overlay)
   }
 
@@ -109,7 +105,6 @@ class InventoryScreenController(
       }
     }
   }
-
 
   private def drawItems(items: List[InventoryItem], selectedItemIndex: Int): Unit = {
     normalizeIndexesRange(items, selectedItemIndex)

@@ -1,15 +1,13 @@
 package ru.spbau.roguelike.view.action
 
-import java.util.function.Consumer
-
 import org.codetome.zircon.api.input.{Input, InputType}
 import ru.spbau.roguelike.model.WorldState
-import ru.spbau.roguelike.view.{GameView, InInventoryState}
+import ru.spbau.roguelike.view.{AbstractScreenListener, GameView, InInventoryState}
 
 class ActionScreenListener(
-  private val worldState: WorldState,
-  private val gameView: GameView
-) extends Consumer[Input] {
+  worldState: WorldState,
+  gameView: GameView
+) extends AbstractScreenListener(worldState, gameView) {
 
   override def accept(input: Input): Unit = {
     if (input.isKeyStroke) {
@@ -28,7 +26,7 @@ class ActionScreenListener(
           worldState.moveCharacterRight()
         case InputType.Character => keyStroke.getCharacter.toLower match {
           case 'i' =>
-            gameView.changeGameViewStateTo(InInventoryState())
+            gameView.changeGameViewStateTo(InInventoryState)
           case _ =>
         }
         case _ =>

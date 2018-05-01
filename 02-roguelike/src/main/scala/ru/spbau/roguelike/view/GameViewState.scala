@@ -1,7 +1,7 @@
 package ru.spbau.roguelike.view
 
-sealed class GameViewState
+sealed trait GameViewState
 
-case class InActionState() extends GameViewState
+case object InActionState extends GameViewState
 
-case class InInventoryState() extends GameViewState
+case object InInventoryState extends GameViewState

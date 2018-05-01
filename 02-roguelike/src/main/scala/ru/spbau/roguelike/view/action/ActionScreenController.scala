@@ -14,9 +14,6 @@ class ActionScreenController(
   terminal: Terminal
 ) extends AbstractScreenController(worldState, terminal) {
 
-  private val height = worldState.getWorldMap.height
-  private val width = worldState.getWorldMap.width
-
   private val overlay: Layer =
     new LayerBuilder()
       .size(screen.getBoundableSize)
@@ -25,19 +22,19 @@ class ActionScreenController(
 
   private val healthHeader =
     LabelBuilder.newBuilder()
-      .position(Position.of(0, height + 2))
+      .position(Position.of(0, height - 2))
       .text("Health:")
       .build()
 
   private val armorHeader =
     HeaderBuilder.newBuilder()
-      .position(Position.of(width / 3 + 4, height + 2))
+      .position(Position.of(width / 3 + 4, height - 2))
       .text("Armor:")
       .build()
 
   private val attackHeader =
     HeaderBuilder.newBuilder()
-      .position(Position.of(width / 3 * 2 + 4, height + 2))
+      .position(Position.of(width / 3 * 2 + 4, height - 2))
       .text("Attack:")
       .build()
 
@@ -45,7 +42,7 @@ class ActionScreenController(
     screen.setCursorVisibility(false)
     val inventoryHeader =
       HeaderBuilder.newBuilder()
-        .position(Position.of(0, height + 3))
+        .position(Position.of(0, height - 1))
         .text("[I]nventory")
         .build()
     screen.addComponent(healthHeader)
@@ -59,8 +56,8 @@ class ActionScreenController(
     clearOverlay()
     val character = worldState.getCharacter
     val worldMap = worldState.getWorldMap
-    for (row <- 0 until height) {
-      for (column <- 0 until width) {
+    for (row <- 0 until worldMap.height) {
+      for (column <- 0 until worldMap.width) {
         val charToSet = worldMap.getEntityAt(column, row) match {
           case Wall() => '#'
           case Floor() => '.'
@@ -72,7 +69,7 @@ class ActionScreenController(
     overlay.setBackgroundColor(ANSITextColor.GREEN)
     overlay.setCharacterAt(Position.of(worldState.getCharacterX, worldState.getCharacterY), '*')
     overlay.resetColorsAndModifiers()
-    overlay.putText("The world was created!", Position.of(0, height + 1))
+    overlay.putText("The world was created!", Position.of(0, height - 3))
     putStatsOnOverlay(character)
     screen.display()
   }

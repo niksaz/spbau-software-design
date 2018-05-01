@@ -20,8 +20,6 @@ class GameView(worldState: WorldState) extends WorldStateChangeListener {
       .title(GameView.GAME_VIEW_TITLE)
       .build()
 
-  private var gameViewState: GameViewState = _
-
   private val actionScreenController = new ActionScreenController(worldState, terminal)
   private val actionScreenListener = new ActionScreenListener(worldState, this)
 
@@ -29,29 +27,36 @@ class GameView(worldState: WorldState) extends WorldStateChangeListener {
   private val inventoryScreenListener =
     new InventoryScreenListener(worldState, this, inventoryScreenController)
 
+  private var gameViewState: GameViewState = InActionState
+
   {
     worldState.addChangeListener(this)
     terminal.onInput { input =>
       gameViewState match {
-        case InActionState() => actionScreenListener.accept(input)
-        case InInventoryState() => inventoryScreenListener.accept(input)
-        case _ =>
+        case InActionState => actionScreenListener.accept(input)
+        case InInventoryState => inventoryScreenListener.accept(input)
+        case null =>
       }
     }
   }
-  override def worldStateUpdated(): Unit = gameViewState match {
-    case InActionState() => actionScreenController.redraw()
-    case InInventoryState() => inventoryScreenController.redraw()
-    case _ =>
+
+  override def worldStateUpdated(): Unit = {
+    redrawCurrentScreen()
   }
 
   def show(): Unit = {
-    changeGameViewStateTo(InActionState())
+    redrawCurrentScreen()
   }
 
   def changeGameViewStateTo(gameViewState: GameViewState): Unit = {
     this.gameViewState = gameViewState
-    worldStateUpdated()
+    redrawCurrentScreen()
+  }
+
+  def redrawCurrentScreen(): Unit = gameViewState match {
+    case InActionState => actionScreenController.redraw()
+    case InInventoryState => inventoryScreenController.redraw()
+    case null =>
   }
 }
 

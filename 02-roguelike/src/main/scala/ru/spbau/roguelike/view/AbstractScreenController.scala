@@ -9,6 +9,9 @@ abstract class AbstractScreenController(
   protected val worldState: WorldState,
   protected val terminal: Terminal
 ) {
+  protected val height: Int = terminal.getBoundableSize.getRows
+  protected val width: Int = terminal.getBoundableSize.getColumns
+
   protected val screen: Screen = TerminalBuilder.createScreenFor(terminal)
 
   def redraw(): Unit
