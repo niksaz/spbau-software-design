@@ -14,6 +14,10 @@ class WorldState private (
 ) {
   private val changeListeners = mutable.ListBuffer[WorldStateChangeListener]()
 
+  private var lastTimeStepMessage = "The world was created"
+
+  def getLastTimeStepMessage: String = lastTimeStepMessage
+
   def getTerrainMap: TerrainMap = terrainMap
 
   def getCharacter: PlayerCharacter = character
@@ -42,6 +46,7 @@ class WorldState private (
   }
 
   private def nextTimeStepWithCharacterDelta(charDeltaX: Int, charDeltaY: Int): Unit = {
+    lastTimeStepMessage = ""
     var charNewX = character.posX + charDeltaX
     var charNewY = character.posY + charDeltaY
     if (!terrainMap.isPassable(charNewX, charNewY)) {
@@ -68,10 +73,15 @@ class WorldState private (
         val afterFightChars = WorldState.combatResolver.resolveFight(character, mob)
         character = afterFightChars._1.asInstanceOf[PlayerCharacter]
         mob = afterFightChars._2.asInstanceOf[MobCharacter]
+        if (lastTimeStepMessage.isEmpty) {
+          lastTimeStepMessage = f"You've fought a mob. It has ${mob.currentHealth} HP left."
+        }
       } else {
         mob = mob.moveTo(mobNewX, mobNewY)
       }
-      if (mob.currentHealth > 0) {
+      if (mob.currentHealth == 0) {
+        lastTimeStepMessage = "You've defeated a mob!"
+      } else {
         newMobs.append(mob)
       }
     }
@@ -101,13 +111,6 @@ object WorldState {
     val terrainMap = new TerrainMap(width, height)
     val (characterX, characterY) = generatePassablePosition(terrainMap)
     val character = PlayerCharacter(characterX, characterY)
-    character.addItem(Item("Wooden sword", CombatStats(0, 0, 5), HandsItemSlot))
-    character.addItem(Item("Wooden armor", CombatStats(0, 2, 0), BodyItemSlot))
-    character.addItem(Item("Wooden armor", CombatStats(0, 2, 0), BodyItemSlot))
-    character.addItem(Item("Wooden armor", CombatStats(0, 2, 0), BodyItemSlot))
-    character.addItem(Item("Wooden armor", CombatStats(0, 2, 0), BodyItemSlot))
-    character.addItem(Item("Wooden armor", CombatStats(0, 2, 0), BodyItemSlot))
-    character.addItem(Item("Wooden armor", CombatStats(0, 2, 0), BodyItemSlot))
     character.addItem(Item("Wooden armor", CombatStats(0, 2, 0), BodyItemSlot))
     character.addItem(Item("Wooden sword", CombatStats(0, 0, 5), HandsItemSlot))
     val mobs = mutable.ListBuffer[MobCharacter]()

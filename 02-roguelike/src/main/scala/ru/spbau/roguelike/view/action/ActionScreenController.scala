@@ -78,8 +78,9 @@ class ActionScreenController(
     val character = worldState.getCharacter
     overlay.setBackgroundColor(ANSITextColor.GREEN)
     overlay.setCharacterAt(Position.of(character.posX, character.posY), '*')
+    overlay.setBackgroundColor(ANSITextColor.YELLOW)
+    overlay.putText(worldState.getLastTimeStepMessage, Position.of(0, height - 3))
     overlay.resetColorsAndModifiers()
-    overlay.putText("The world was created!", Position.of(0, height - 3))
     putStatsOnOverlay(worldState.getCharacter)
     screen.display()
   }

@@ -185,7 +185,7 @@ object InventoryScreenController {
       nonzeroStats.append(f"ARM: +${stats.armor}")
     }
     if (stats.attack != 0) {
-      nonzeroStats.append(f"ATT: +${stats.attack}")
+      nonzeroStats.append(f"ATK: +${stats.attack}")
     }
     nonzeroStats.mkString("(", ", ", ")")
   }
