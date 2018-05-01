@@ -1,5 +1,6 @@
 package ru.spbau.roguelike.model
 
+import com.typesafe.scalalogging.Logger
 import ru.spbau.roguelike.model.characters._
 import ru.spbau.roguelike.model.combat.CombatResolver
 import ru.spbau.roguelike.model.items.DropItemGenerator
@@ -47,6 +48,7 @@ class WorldState private (
   }
 
   private def nextTimeStepWithCharacterDelta(charDeltaX: Int, charDeltaY: Int): Unit = {
+    WorldState.logger.info("New time step")
     lastTimeStepMessage = ""
     var charNewX = character.posX + charDeltaX
     var charNewY = character.posY + charDeltaY
@@ -111,6 +113,8 @@ class WorldState private (
 }
 
 object WorldState {
+  private val logger = Logger(classOf[WorldState])
+
   private val DIRS = List((1, 0), (-1, 0), (0, 1), (0, -1))
   private val MOBS_TO_SPAWN = 10
 
