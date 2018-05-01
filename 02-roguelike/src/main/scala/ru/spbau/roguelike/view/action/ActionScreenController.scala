@@ -65,11 +65,10 @@ class ActionScreenController(
 
   override def redraw(): Unit = {
     clearOverlay()
-    val character = worldState.getCharacter
-    val worldMap = worldState.getWorldMap
-    for (row <- 0 until worldMap.height) {
-      for (column <- 0 until worldMap.width) {
-        val charToSet = worldMap.getEntityAt(column, row) match {
+    val terrainMap = worldState.getTerrainMap
+    for (row <- 0 until terrainMap.height) {
+      for (column <- 0 until terrainMap.width) {
+        val charToSet = terrainMap.getEntityAt(column, row) match {
           case Wall() => '#'
           case Floor() => '.'
         }
@@ -78,10 +77,12 @@ class ActionScreenController(
       }
     }
     overlay.setBackgroundColor(ANSITextColor.GREEN)
-    overlay.setCharacterAt(Position.of(worldState.getCharacterX, worldState.getCharacterY), '*')
+    overlay.setCharacterAt(
+      Position.of(worldState.getCharacter.posX, worldState.getCharacter.posY),
+      '*')
     overlay.resetColorsAndModifiers()
     overlay.putText("The world was created!", Position.of(0, height - 3))
-    putStatsOnOverlay(character)
+    putStatsOnOverlay(worldState.getCharacter)
     screen.display()
   }
 

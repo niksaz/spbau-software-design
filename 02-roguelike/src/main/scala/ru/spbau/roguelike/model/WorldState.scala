@@ -4,16 +4,12 @@ import scala.collection.mutable
 import scala.util.Random
 
 class WorldState private (
-  private val worldMap: WorldMap,
-  private val character: PlayerCharacter,
-  private var posX: Int,
-  private var posY: Int
+  private val terrainMap: TerrainMap,
+  private var character: PlayerCharacter
 ) {
   private val changeListeners = mutable.ListBuffer[WorldStateChangeListener]()
 
-  def getWorldMap: WorldMap = worldMap
-  def getCharacterX: Int = posX
-  def getCharacterY: Int = posY
+  def getTerrainMap: TerrainMap = terrainMap
 
   def getCharacter: PlayerCharacter = character
 
@@ -39,11 +35,10 @@ class WorldState private (
   }
 
   private def moveCharacterByDelta(deltaX: Int, deltaY: Int): Unit = {
-    val newX = posX + deltaX
-    val newY = posY + deltaY
-    if (worldMap.isCellInsideMap(newX, newY) && worldMap.getEntityAt(newX, newY).isPassable) {
-      posX = newX
-      posY = newY
+    val newX = character.posX + deltaX
+    val newY = character.posY + deltaY
+    if (terrainMap.isCellInsideMap(newX, newY) && terrainMap.getEntityAt(newX, newY).isPassable) {
+      character = character.moveTo(newX, newY)
     }
     notifyChangeListeners()
   }
@@ -60,23 +55,23 @@ class WorldState private (
 object WorldState {
   def apply(width: Int, height: Int): WorldState = {
     val generator: Random = new Random()
-    val worldMap = new WorldMap(width, height)
-    val character = new PlayerCharacter
-    character.addItem(Item("Wooden sword", CombatStats(0, 0, 5), HandsItemSlot))
-    character.addItem(Item("Wooden armor", CombatStats(0, 2, 0), BodyItemSlot))
-    character.addItem(Item("Wooden armor", CombatStats(0, 2, 0), BodyItemSlot))
-    character.addItem(Item("Wooden armor", CombatStats(0, 2, 0), BodyItemSlot))
-    character.addItem(Item("Wooden armor", CombatStats(0, 2, 0), BodyItemSlot))
-    character.addItem(Item("Wooden armor", CombatStats(0, 2, 0), BodyItemSlot))
-    character.addItem(Item("Wooden armor", CombatStats(0, 2, 0), BodyItemSlot))
-    character.addItem(Item("Wooden armor", CombatStats(0, 2, 0), BodyItemSlot))
-    character.addItem(Item("Wooden sword", CombatStats(0, 0, 5), HandsItemSlot))
+    val terrainMap = new TerrainMap(width, height)
     var posX: Int = -1
     var posY: Int = -1
     do {
       posX = generator.nextInt(width)
       posY = generator.nextInt(height)
-    } while (!worldMap.getEntityAt(posX, posY).isPassable)
-    new WorldState(worldMap, character, posX, posY)
+    } while (!terrainMap.getEntityAt(posX, posY).isPassable)
+    val character = PlayerCharacter(posX, posY)
+    character.addItem(Item("Wooden sword", CombatStats(0, 0, 5), HandsItemSlot))
+    character.addItem(Item("Wooden armor", CombatStats(0, 2, 0), BodyItemSlot))
+    character.addItem(Item("Wooden armor", CombatStats(0, 2, 0), BodyItemSlot))
+    character.addItem(Item("Wooden armor", CombatStats(0, 2, 0), BodyItemSlot))
+    character.addItem(Item("Wooden armor", CombatStats(0, 2, 0), BodyItemSlot))
+    character.addItem(Item("Wooden armor", CombatStats(0, 2, 0), BodyItemSlot))
+    character.addItem(Item("Wooden armor", CombatStats(0, 2, 0), BodyItemSlot))
+    character.addItem(Item("Wooden armor", CombatStats(0, 2, 0), BodyItemSlot))
+    character.addItem(Item("Wooden sword", CombatStats(0, 0, 5), HandsItemSlot))
+    new WorldState(terrainMap, character)
   }
 }

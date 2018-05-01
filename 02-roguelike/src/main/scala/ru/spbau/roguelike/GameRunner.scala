@@ -11,6 +11,7 @@ object GameRunner {
     val worldState = WorldState(width, height)
 
     val gameView = new GameView(worldState)
+
     gameView.show()
   }
 }

@@ -14,8 +14,8 @@ class GameView(worldState: WorldState) extends WorldStateChangeListener {
     TerminalBuilder.newBuilder
       .initialTerminalSize(
         Size.of(
-          worldState.getWorldMap.width,
-          worldState.getWorldMap.height + 4))
+          worldState.getTerrainMap.width,
+          worldState.getTerrainMap.height + 4))
       .font(CP437TilesetResource.ROGUE_YUN_16X16.toFont())
       .title(GameView.GAME_VIEW_TITLE)
       .build()
