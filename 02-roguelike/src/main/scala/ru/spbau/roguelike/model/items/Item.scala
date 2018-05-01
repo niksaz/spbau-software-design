@@ -1,4 +1,4 @@
-package ru.spbau.roguelike.model.character
+package ru.spbau.roguelike.model.items
 
 import ru.spbau.roguelike.model.combat.CombatStats
 

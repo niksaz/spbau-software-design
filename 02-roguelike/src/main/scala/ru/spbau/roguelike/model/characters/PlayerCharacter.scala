@@ -1,6 +1,7 @@
-package ru.spbau.roguelike.model.character
+package ru.spbau.roguelike.model.characters
 
 import ru.spbau.roguelike.model.combat.{CombatCharacter, CombatStats}
+import ru.spbau.roguelike.model.items.Item
 
 class PlayerCharacter private (
   override val posX: Int,
@@ -16,8 +17,9 @@ class PlayerCharacter private (
 
   def getItems: List[InventoryItem] = inventory.getItems
 
-  def addItem(item: Item): Unit = {
-    inventory.addItem(item)
+  def addItem(item: Item): PlayerCharacter = {
+    val newInventory = inventory.addItem(item)
+    new PlayerCharacter(posX, posY, currentHealth, stats, newInventory)
   }
 
   def invertIsEquippedItemWithIndex(itemIndex: Int): Unit = {
@@ -33,7 +35,7 @@ class PlayerCharacter private (
 
 object PlayerCharacter {
   def apply(posX: Int, posY: Int): PlayerCharacter = {
-    val stats = CombatStats(100, 1, 1)
-    new PlayerCharacter(posX, posY, stats.health, stats, new Inventory())
+    val stats = CombatStats(100, 0, 1)
+    new PlayerCharacter(posX, posY, stats.health, stats, Inventory())
   }
 }

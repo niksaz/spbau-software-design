@@ -6,7 +6,7 @@ import org.codetome.zircon.api.color.ANSITextColor
 import org.codetome.zircon.api.component.builder.{HeaderBuilder, LabelBuilder}
 import org.codetome.zircon.api.terminal.Terminal
 import ru.spbau.roguelike.model.WorldState
-import ru.spbau.roguelike.model.character.PlayerCharacter
+import ru.spbau.roguelike.model.characters.PlayerCharacter
 import ru.spbau.roguelike.model.terrain.{Floor, Wall}
 import ru.spbau.roguelike.view.AbstractScreenController
 

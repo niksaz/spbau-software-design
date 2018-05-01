@@ -1,4 +1,4 @@
-package ru.spbau.roguelike.model.character
+package ru.spbau.roguelike.model.characters
 
 trait PositionalCharacter {
   val posX: Int

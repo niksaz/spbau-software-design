@@ -1,7 +1,8 @@
 package ru.spbau.roguelike.model
 
-import ru.spbau.roguelike.model.character._
-import ru.spbau.roguelike.model.combat.{CombatResolver, CombatStats}
+import ru.spbau.roguelike.model.characters._
+import ru.spbau.roguelike.model.combat.CombatResolver
+import ru.spbau.roguelike.model.items.DropItemGenerator
 import ru.spbau.roguelike.model.terrain.TerrainMap
 
 import scala.collection.mutable
@@ -14,7 +15,7 @@ class WorldState private (
 ) {
   private val changeListeners = mutable.ListBuffer[WorldStateChangeListener]()
 
-  private var lastTimeStepMessage = "The world was created"
+  private var lastTimeStepMessage = "The world has been created."
 
   def getLastTimeStepMessage: String = lastTimeStepMessage
 
@@ -68,21 +69,29 @@ class WorldState private (
       val swappedPos =
         (mobNewX, mobNewY) == (character.posX, character.posY) &&
         (charNewX, charNewY) == (mob.posX, mob.posY)
-      if (sameFinalPos || swappedPos) {
-        wasFighting = true
+      val shouldFightOccur = sameFinalPos || swappedPos
+      if (shouldFightOccur) {
         val afterFightChars = WorldState.combatResolver.resolveFight(character, mob)
         character = afterFightChars._1.asInstanceOf[PlayerCharacter]
         mob = afterFightChars._2.asInstanceOf[MobCharacter]
         if (lastTimeStepMessage.isEmpty) {
-          lastTimeStepMessage = f"You've fought a mob. It has ${mob.currentHealth} HP left."
         }
       } else {
         mob = mob.moveTo(mobNewX, mobNewY)
       }
+      wasFighting |= shouldFightOccur
       if (mob.currentHealth == 0) {
-        lastTimeStepMessage = "You've defeated a mob!"
+        val droppedItem = WorldState.dropItemGenerator.generateDropItem(character, mob)
+        lastTimeStepMessage = f"You've defeated a mob!${
+          if (droppedItem.nonEmpty) f" It dropped ${droppedItem.get.name}" else ""}"
+        if (droppedItem.nonEmpty) {
+          character = character.addItem(droppedItem.get)
+        }
       } else {
         newMobs.append(mob)
+        if (shouldFightOccur) {
+          lastTimeStepMessage = f"You've fought a mob. It has ${mob.currentHealth} HP left."
+        }
       }
     }
     if (!wasFighting) {
@@ -103,18 +112,18 @@ class WorldState private (
 
 object WorldState {
   private val DIRS = List((1, 0), (-1, 0), (0, 1), (0, -1))
+  private val MOBS_TO_SPAWN = 3
 
   private val generator: Random = new Random()
+  private val dropItemGenerator = DropItemGenerator
   private val combatResolver: CombatResolver = CombatResolver()
 
   def apply(width: Int, height: Int): WorldState = {
     val terrainMap = new TerrainMap(width, height)
     val (characterX, characterY) = generatePassablePosition(terrainMap)
     val character = PlayerCharacter(characterX, characterY)
-    character.addItem(Item("Wooden armor", CombatStats(0, 2, 0), BodyItemSlot))
-    character.addItem(Item("Wooden sword", CombatStats(0, 0, 5), HandsItemSlot))
     val mobs = mutable.ListBuffer[MobCharacter]()
-    (0 until 3).foreach { _ =>
+    Range(0, MOBS_TO_SPAWN).foreach { _ =>
       val (mobX, mobY) = generatePassablePosition(terrainMap)
       mobs.append(MobCharacter(mobX, mobY))
     }

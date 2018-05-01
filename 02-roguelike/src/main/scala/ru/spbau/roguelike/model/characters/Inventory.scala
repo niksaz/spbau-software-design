@@ -1,20 +1,20 @@
-package ru.spbau.roguelike.model.character
+package ru.spbau.roguelike.model.characters
 
 import ru.spbau.roguelike.model.combat.CombatStats
+import ru.spbau.roguelike.model.items.Item
 
 case class InventoryItem(item: Item, var isEquipped: Boolean)
 
-class Inventory {
-  private var items: List[InventoryItem] = List()
-
+class Inventory private (
+  private val items: List[InventoryItem]
+) {
   def getItems: List[InventoryItem] = items
 
   def getStats: CombatStats =
     items.filter(_.isEquipped).foldLeft(CombatStats(0, 0, 0))(_ + _.item.stats)
 
-  def addItem(item: Item): Unit = {
-    items = InventoryItem(item, isEquipped = false) :: items
-  }
+  def addItem(item: Item): Inventory =
+     new Inventory(InventoryItem(item, isEquipped = false) :: items)
 
   def invertIsEquippedItem(itemIndex: Int): Unit = {
     val itemToInvert = items(itemIndex)
@@ -25,4 +25,8 @@ class Inventory {
     }
     items(itemIndex).isEquipped ^= true
   }
+}
+
+object Inventory {
+  def apply(): Inventory = new Inventory(List())
 }

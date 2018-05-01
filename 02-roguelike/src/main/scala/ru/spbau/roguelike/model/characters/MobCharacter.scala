@@ -1,4 +1,4 @@
-package ru.spbau.roguelike.model.character
+package ru.spbau.roguelike.model.characters
 
 import ru.spbau.roguelike.model.combat.{CombatCharacter, CombatStats}
 
@@ -20,7 +20,7 @@ class MobCharacter(
 
 object MobCharacter {
   def apply(posX: Int, posY: Int): MobCharacter = {
-    val stats = CombatStats(10, 1, 2)
+    val stats = CombatStats(10, 0, 2)
     new MobCharacter(posX, posY, stats.health, stats)
   }
 }
