@@ -40,15 +40,26 @@ class ActionScreenController(
 
   {
     screen.setCursorVisibility(false)
+
     val inventoryHeader =
       HeaderBuilder.newBuilder()
-        .position(Position.of(0, height - 1))
+        .position(
+          Position.of(armorHeader.getPosition.getColumn, armorHeader.getPosition.getRow + 1))
         .text("[I]nventory")
         .build()
+
+    val quitHeader =
+      HeaderBuilder.newBuilder()
+        .position(
+          Position.of(attackHeader.getPosition.getColumn, attackHeader.getPosition.getRow + 1))
+        .text("[Q]uit")
+        .build()
+
     screen.addComponent(healthHeader)
     screen.addComponent(armorHeader)
     screen.addComponent(attackHeader)
     screen.addComponent(inventoryHeader)
+    screen.addComponent(quitHeader)
     screen.pushLayer(overlay)
   }
 

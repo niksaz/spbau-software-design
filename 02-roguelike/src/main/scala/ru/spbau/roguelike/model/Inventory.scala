@@ -17,7 +17,7 @@ class Inventory {
   def invertIsEquippedItem(itemIndex: Int): Unit = {
     val itemToInvert = items(itemIndex)
     if (!itemToInvert.isEquipped) {
-      items.filter(_.item.bodyPart == itemToInvert.item.bodyPart).foreach { item =>
+      items.filter(_.item.itemSlot == itemToInvert.item.itemSlot).foreach { item =>
         item.isEquipped = false
       }
     }

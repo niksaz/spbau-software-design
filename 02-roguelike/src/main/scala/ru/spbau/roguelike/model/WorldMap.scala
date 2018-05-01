@@ -3,6 +3,7 @@ package ru.spbau.roguelike.model
 import scala.util.Random
 
 class WorldMap(val width: Int, val height: Int) {
+
   private val entities = Array.ofDim[WorldMapEntity](width, height)
 
   {

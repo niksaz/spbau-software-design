@@ -176,7 +176,7 @@ object InventoryScreenController {
     if (inventoryItem.isEquipped) {
       inventoryItemDesc.append("[*] ")
     }
-    val itemLabel = f"${item.name} ${statsToString(item.stats)} @ ${item.bodyPart}"
+    val itemLabel = f"${item.name} ${statsToString(item.stats)} @ ${item.itemSlot.name}"
     inventoryItemDesc.append(itemLabel)
     inventoryItemDesc.toString()
   }

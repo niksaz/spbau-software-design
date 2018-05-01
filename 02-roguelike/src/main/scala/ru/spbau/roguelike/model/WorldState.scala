@@ -7,8 +7,8 @@ class WorldState private (
   private val worldMap: WorldMap,
   private val character: PlayerCharacter,
   private var posX: Int,
-  private var posY: Int) {
-
+  private var posY: Int
+) {
   private val changeListeners = mutable.ListBuffer[WorldStateChangeListener]()
 
   def getWorldMap: WorldMap = worldMap
@@ -62,15 +62,15 @@ object WorldState {
     val generator: Random = new Random()
     val worldMap = new WorldMap(width, height)
     val character = new PlayerCharacter
-    character.addItem(Item("Wooden sword", CombatStats(0, 0, 5), CharacterBodyPart.Hands))
-    character.addItem(Item("Wooden armor", CombatStats(0, 2, 0), CharacterBodyPart.Body))
-    character.addItem(Item("Wooden armor", CombatStats(0, 2, 0), CharacterBodyPart.Body))
-    character.addItem(Item("Wooden armor", CombatStats(0, 2, 0), CharacterBodyPart.Body))
-    character.addItem(Item("Wooden armor", CombatStats(0, 2, 0), CharacterBodyPart.Body))
-    character.addItem(Item("Wooden armor", CombatStats(0, 2, 0), CharacterBodyPart.Body))
-    character.addItem(Item("Wooden armor", CombatStats(0, 2, 0), CharacterBodyPart.Body))
-    character.addItem(Item("Wooden armor", CombatStats(0, 2, 0), CharacterBodyPart.Body))
-    character.addItem(Item("Wooden sword", CombatStats(0, 0, 5), CharacterBodyPart.Hands))
+    character.addItem(Item("Wooden sword", CombatStats(0, 0, 5), HandsItemSlot))
+    character.addItem(Item("Wooden armor", CombatStats(0, 2, 0), BodyItemSlot))
+    character.addItem(Item("Wooden armor", CombatStats(0, 2, 0), BodyItemSlot))
+    character.addItem(Item("Wooden armor", CombatStats(0, 2, 0), BodyItemSlot))
+    character.addItem(Item("Wooden armor", CombatStats(0, 2, 0), BodyItemSlot))
+    character.addItem(Item("Wooden armor", CombatStats(0, 2, 0), BodyItemSlot))
+    character.addItem(Item("Wooden armor", CombatStats(0, 2, 0), BodyItemSlot))
+    character.addItem(Item("Wooden armor", CombatStats(0, 2, 0), BodyItemSlot))
+    character.addItem(Item("Wooden sword", CombatStats(0, 0, 5), HandsItemSlot))
     var posX: Int = -1
     var posY: Int = -1
     do {
