@@ -96,15 +96,6 @@ class InventoryScreenController(
     screen.display()
   }
 
-  private def clearOverlay(): Unit = {
-    val size = overlay.getBoundableSize
-    for (column <- 0 until size.getColumns) {
-      for (row <- 0 until size.getRows) {
-        overlay.setCharacterAt(Position.of(column, row), TextCharacterBuilder.EMPTY)
-      }
-    }
-  }
-
   private def drawItems(items: List[InventoryItem], selectedItemIndex: Int): Unit = {
     normalizeIndexesRange(items, selectedItemIndex)
     val column = panel.getPosition.getColumn + 2

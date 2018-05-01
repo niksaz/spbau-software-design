@@ -1,5 +1,6 @@
 package ru.spbau.roguelike.view
 
+import org.codetome.zircon.api.Position
 import org.codetome.zircon.api.builder.{LayerBuilder, TerminalBuilder, TextCharacterBuilder}
 import org.codetome.zircon.api.graphics.Layer
 import org.codetome.zircon.api.screen.Screen
@@ -24,6 +25,15 @@ abstract class AbstractScreenController(
       .size(screen.getBoundableSize)
       .filler(TextCharacterBuilder.EMPTY)
       .build
+
+  protected def clearOverlay(): Unit = {
+    val size = overlay.getBoundableSize
+    for (column <- 0 until size.getColumns) {
+      for (row <- 0 until size.getRows) {
+        overlay.setCharacterAt(Position.of(column, row), TextCharacterBuilder.EMPTY)
+      }
+    }
+  }
 
   /** Draws the screen content on the [[Terminal]]. */
   def redraw(): Unit

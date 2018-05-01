@@ -95,15 +95,6 @@ class MapScreenController(
     screen.display()
   }
 
-  private def clearOverlay(): Unit = {
-    val size = overlay.getBoundableSize
-    for (column <- 0 until size.getColumns) {
-      for (row <- 0 until size.getRows) {
-        overlay.setCharacterAt(Position.of(column, row), TextCharacterBuilder.EMPTY)
-      }
-    }
-  }
-
   private def putStatsOnOverlay(character: PlayerCharacter): Unit = {
     val charStats = character.getStats
     val currentHealth = character.getCurrentHealth
