@@ -3,7 +3,6 @@ package ru.spbau.roguelike.model
 import scala.util.Random
 
 class TerrainMap(val width: Int, val height: Int) {
-
   private val entities = Array.ofDim[TerrainMapEntity](width, height)
 
   {
@@ -22,5 +21,6 @@ class TerrainMap(val width: Int, val height: Int) {
 
   def getEntityAt(column: Int, row: Int): TerrainMapEntity = entities(column)(row)
 
-  def isCellInsideMap(x: Int, y: Int): Boolean = 0 <= x && x < width && 0 <= y && y < height
+  def isPassable(x: Int, y: Int): Boolean =
+    0 <= x && x < width && 0 <= y && y < height && entities(x)(y).isPassable
 }

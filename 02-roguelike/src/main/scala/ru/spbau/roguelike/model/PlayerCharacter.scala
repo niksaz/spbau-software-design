@@ -3,14 +3,14 @@ package ru.spbau.roguelike.model
 class PlayerCharacter private (
   override val posX: Int,
   override val posY: Int,
-  private val baseStats: CombatStats,
+  private val stats: CombatStats,
   private val currentHealth: Int,
   private val inventory: Inventory,
-)extends MapCharacter {
+)extends PositionalCharacter {
 
   def getCurrentHealth: Int = currentHealth
 
-  def getStats: CombatStats = baseStats + inventory.getStats
+  def getStats: CombatStats = stats + inventory.getStats
 
   def getItems: List[InventoryItem] = inventory.getItems
 
@@ -23,12 +23,12 @@ class PlayerCharacter private (
   }
 
   override def moveTo(newX: Int, newY: Int): PlayerCharacter =
-    new PlayerCharacter(newX, newY, baseStats, currentHealth, inventory)
+    new PlayerCharacter(newX, newY, stats, currentHealth, inventory)
 }
 
 object PlayerCharacter {
   def apply(posX: Int, posY: Int): PlayerCharacter = {
-    val baseStats = CombatStats(200, 1, 1)
-    new PlayerCharacter(posX, posY, baseStats, baseStats.health, new Inventory())
+    val stats = CombatStats(200, 1, 1)
+    new PlayerCharacter(posX, posY, stats, stats.health, new Inventory())
   }
 }

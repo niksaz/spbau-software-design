@@ -76,10 +76,13 @@ class ActionScreenController(
         overlay.resetColorsAndModifiers()
       }
     }
+    worldState.getMobs.foreach { mob =>
+      overlay.setBackgroundColor(ANSITextColor.RED)
+      overlay.setCharacterAt(Position.of(mob.posX, mob.posY), 'x')
+    }
+    val character = worldState.getCharacter
     overlay.setBackgroundColor(ANSITextColor.GREEN)
-    overlay.setCharacterAt(
-      Position.of(worldState.getCharacter.posX, worldState.getCharacter.posY),
-      '*')
+    overlay.setCharacterAt(Position.of(character.posX, character.posY), '*')
     overlay.resetColorsAndModifiers()
     overlay.putText("The world was created!", Position.of(0, height - 3))
     putStatsOnOverlay(worldState.getCharacter)
