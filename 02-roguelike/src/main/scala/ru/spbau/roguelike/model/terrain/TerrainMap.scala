@@ -11,9 +11,9 @@ class TerrainMap(val width: Int, val height: Int) {
       for (row <- 0 until height) {
         entities(column)(row) =
           if (column == 0 || column + 1 == width || row == 0 || row + 1 == height) {
-            Wall()
+            Wall
           } else {
-            if (generator.nextInt(4) == 0) Wall() else Floor()
+            if (generator.nextInt(4) == 0) Wall else Floor
           }
       }
     }

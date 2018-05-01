@@ -1,13 +1,13 @@
 package ru.spbau.roguelike.model.terrain
 
-abstract class TerrainMapEntity {
+sealed trait TerrainMapEntity {
   def isPassable: Boolean
 }
 
-case class Wall() extends TerrainMapEntity {
+case object Wall extends TerrainMapEntity {
   override def isPassable: Boolean = false
 }
 
-case class Floor() extends TerrainMapEntity {
+case object Floor extends TerrainMapEntity {
   override def isPassable: Boolean = true
 }

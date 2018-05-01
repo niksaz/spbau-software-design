@@ -112,7 +112,7 @@ class WorldState private (
 
 object WorldState {
   private val DIRS = List((1, 0), (-1, 0), (0, 1), (0, -1))
-  private val MOBS_TO_SPAWN = 3
+  private val MOBS_TO_SPAWN = 10
 
   private val generator: Random = new Random()
   private val dropItemGenerator = DropItemGenerator

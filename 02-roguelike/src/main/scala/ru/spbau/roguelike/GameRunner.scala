@@ -8,9 +8,9 @@ object GameRunner {
     val width = 48
     val height = 20
 
-    val worldState = WorldState(width, height)
+    val worldState = WorldState(2 * width, 2 * height)
 
-    val gameView = new GameView(worldState)
+    val gameView = new GameView(width, height, worldState)
 
     gameView.show()
   }

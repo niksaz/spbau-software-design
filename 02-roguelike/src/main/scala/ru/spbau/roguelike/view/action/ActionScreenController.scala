@@ -59,13 +59,19 @@ class ActionScreenController(
   }
 
   override def redraw(): Unit = {
+    val viewWidth = width
+    val viewHeight = height - 4
+    val sectorX = worldState.getCharacter.posX / viewWidth
+    val sectorY = worldState.getCharacter.posY / viewHeight
     clearOverlay()
     val terrainMap = worldState.getTerrainMap
-    for (row <- 0 until terrainMap.height) {
-      for (column <- 0 until terrainMap.width) {
-        val charToSet = terrainMap.getEntityAt(column, row) match {
-          case Wall() => '#'
-          case Floor() => '.'
+    for (column <- 0 until viewWidth) {
+      for (row <- 0 until viewHeight) {
+        val terrainEntity =
+          terrainMap.getEntityAt(column + sectorX * viewWidth, row + sectorY * viewHeight)
+        val charToSet = terrainEntity match {
+          case Wall => '#'
+          case Floor => '.'
         }
         overlay.setCharacterAt(Position.of(column, row), charToSet)
         overlay.resetColorsAndModifiers()
@@ -73,11 +79,14 @@ class ActionScreenController(
     }
     worldState.getMobs.foreach { mob =>
       overlay.setBackgroundColor(ANSITextColor.RED)
-      overlay.setCharacterAt(Position.of(mob.posX, mob.posY), 'x')
+      if (mob.posX / viewWidth == sectorX && mob.posY / viewHeight == sectorY) {
+        overlay.setCharacterAt(Position.of(mob.posX % viewWidth, mob.posY % viewHeight), 'x')
+      }
     }
     val character = worldState.getCharacter
     overlay.setBackgroundColor(ANSITextColor.GREEN)
-    overlay.setCharacterAt(Position.of(character.posX, character.posY), '*')
+    overlay.setCharacterAt(
+      Position.of(character.posX % viewWidth, character.posY % viewHeight), '*')
     overlay.setBackgroundColor(ANSITextColor.YELLOW)
     overlay.putText(worldState.getLastTimeStepMessage, Position.of(0, height - 3))
     overlay.resetColorsAndModifiers()

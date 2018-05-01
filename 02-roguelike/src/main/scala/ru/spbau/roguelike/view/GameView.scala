@@ -9,14 +9,16 @@ import ru.spbau.roguelike.view.action.{ActionScreenController, ActionScreenListe
 import ru.spbau.roguelike.view.inventory.{InventoryScreenController, InventoryScreenListener}
 import ru.spbau.roguelike.view.lost.LostScreenController
 
-class GameView(worldState: WorldState) extends WorldStateChangeListener {
+class GameView(
+  visibleMapWidth: Int,
+  visibleMapHeight: Int,
+  worldState: WorldState
+) extends WorldStateChangeListener {
 
   private val terminal: Terminal =
     TerminalBuilder.newBuilder
       .initialTerminalSize(
-        Size.of(
-          worldState.getTerrainMap.width,
-          worldState.getTerrainMap.height + 4))
+        Size.of(visibleMapWidth, visibleMapHeight + 4))
       .font(CP437TilesetResource.ROGUE_YUN_16X16.toFont())
       .title(GameView.GAME_VIEW_TITLE)
       .build()
@@ -39,7 +41,6 @@ class GameView(worldState: WorldState) extends WorldStateChangeListener {
         case InActionState => actionScreenListener.accept(input)
         case InInventoryState => inventoryScreenListener.accept(input)
         case InLostState =>
-        case null =>
       }
     }
   }
@@ -61,7 +62,6 @@ class GameView(worldState: WorldState) extends WorldStateChangeListener {
     case InActionState => actionScreenController.redraw()
     case InInventoryState => inventoryScreenController.redraw()
     case InLostState => lostScreenController.redraw()
-    case null =>
   }
 }
 
