@@ -39,7 +39,7 @@ class MapScreenListener(
         }
         case _ =>
       }
-      if (worldState.getCharacter.getCurrentHealth == 0) {
+      if (worldState.getCharacter.currentHealth == 0) {
         gameView.changeGameViewStateTo(GameLostState)
       }
     }

@@ -97,7 +97,7 @@ class MapScreenController(
 
   private def putStatsOnOverlay(character: PlayerCharacter): Unit = {
     val charStats = character.getStats
-    val currentHealth = character.getCurrentHealth
+    val currentHealth = character.currentHealth
 
     val row = healthHeader.getPosition.getRow
 

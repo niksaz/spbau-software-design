@@ -14,8 +14,6 @@ class PlayerCharacter private (
 
   override def toString = s"PlayerCharacter($posX, $posY, $currentHealth, $stats, $getItems)"
 
-  def getCurrentHealth: Int = currentHealth
-
   /** Returns the player's [[InventoryItem]]s. */
   def getItems: List[InventoryItem] = inventory.items
 
