@@ -9,7 +9,7 @@ import ru.spbau.roguelike.view.{AbstractScreenListener, GameView, OnMapState}
 class InventoryScreenListener(
   worldState: WorldState,
   gameView: GameView,
-  private val inventoryScreenController: InventoryScreenController
+  private val controller: InventoryScreenController
 ) extends AbstractScreenListener(worldState, gameView) {
 
   override def accept(input: Input): Unit = {
@@ -18,13 +18,13 @@ class InventoryScreenListener(
       input.asKeyStroke().getInputType match {
         case InputType.ArrowDown =>
           InventoryScreenListener.logger.info("ArrowDown pressed")
-          inventoryScreenController.moveDownInInventory()
+          controller.moveDownInInventory()
         case InputType.ArrowUp =>
           InventoryScreenListener.logger.info("ArrowUp pressed")
-          inventoryScreenController.moveUpInInventory()
+          controller.moveUpInInventory()
         case InputType.Enter =>
           InventoryScreenListener.logger.info("Enter pressed")
-          worldState.equipItemWithIndex(inventoryScreenController.getInventoryPosition)
+          worldState.equipItemWithIndex(controller.getInventoryPosition)
         case InputType.Character => keyStroke.getCharacter.toUpper match {
           case 'I' =>
             InventoryScreenListener.logger.info("'I' pressed")

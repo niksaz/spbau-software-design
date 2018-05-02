@@ -1,6 +1,5 @@
 package ru.spbau.roguelike.view.inventory
 
-import org.codetome.zircon.api.builder.TextCharacterBuilder
 import org.codetome.zircon.api.color.ANSITextColor
 import org.codetome.zircon.api.component.builder.{HeaderBuilder, LabelBuilder, PanelBuilder}
 import org.codetome.zircon.api.terminal.Terminal
