@@ -46,48 +46,25 @@ class WorldState private (
   }
 
   /**
-    * Makes the character move up.
+    * Moves the character in the given direction.
     * Process the next time step and notifies the listeners after the update.
     */
-  def moveCharacterUp(): Unit = {
-    nextTimeStepWithCharacterDelta((0, -1))
+  def moveCharacter(direction: MapDirection.Direction): Unit = {
+    nextTimeStepWithCharacterDelta(direction)
   }
 
-  /**
-    * Makes the character move down.
-    * Process the next time step and notifies the listeners after the update.
-    */
-  def moveCharacterDown(): Unit = {
-    nextTimeStepWithCharacterDelta((0, 1))
-  }
-
-  /**
-    * Makes the character move left.
-    * Process the next time step and notifies the listeners after the update.
-    */
-  def moveCharacterLeft(): Unit = {
-    nextTimeStepWithCharacterDelta((-1, 0))
-  }
-
-  /**
-    * Makes the character move right.
-    * Process the next time step and notifies the listeners after the update.
-    */
-  def moveCharacterRight(): Unit = {
-    nextTimeStepWithCharacterDelta((1, 0))
-  }
-
-  private def nextTimeStepWithCharacterDelta(delta: (Int, Int)): Unit = {
+  private def nextTimeStepWithCharacterDelta(dir: MapDirection.Direction): Unit = {
     WorldState.logger.info("New time step")
     WorldState.logger.info(s"Character state is $character")
     lastTimeStepMessage = ""
-    val (charNewX, charNewY) = tryToMoveByDelta(character.posX, character.posY, delta)
+    val (charNewX, charNewY) = tryToMoveByDirection(character.posX, character.posY, dir)
     var wasInCombat = false
     val newMobs = mutable.ListBuffer[MobCharacter]()
     mobs.foreach { mobInPast =>
       var mob = mobInPast
-      val mobDir = WorldState.DIRS(WorldState.generator.nextInt(4))
-      val (mobNewX, mobNewY) = tryToMoveByDelta(mob.posX, mob.posY, mobDir)
+      val mobDir =
+        MapDirection.directions(WorldState.generator.nextInt(MapDirection.directions.length))
+      val (mobNewX, mobNewY) = tryToMoveByDirection(mob.posX, mob.posY, mobDir)
       val sameFinalPos = (mobNewX, mobNewY) == (charNewX, charNewY)
       val swappedPos =
         (mobNewX, mobNewY) == (character.posX, character.posY) &&
@@ -128,9 +105,11 @@ class WorldState private (
     notifyChangeListeners()
   }
 
-  private def tryToMoveByDelta(posX: Int, posY: Int, delta: (Int, Int)): (Int, Int) = {
-    val newPosX = posX + delta._1
-    val newPosY = posY + delta._2
+  private def tryToMoveByDirection(
+    posX: Int, posY: Int, dir: MapDirection.Direction
+  ): (Int, Int) = {
+    val newPosX = posX + dir.deltaX
+    val newPosY = posY + dir.deltaY
     if (terrainMap.isPassable(newPosX, newPosY)) (newPosX, newPosY) else (posX, posY)
   }
 
@@ -142,7 +121,6 @@ class WorldState private (
 object WorldState {
   private val logger = Logger(classOf[WorldState])
 
-  private val DIRS = List((1, 0), (-1, 0), (0, 1), (0, -1))
   private val DEFAULT_MOBS_TO_SPAWN = 10
 
   private val generator: Random = new Random()
@@ -153,8 +131,7 @@ object WorldState {
     * Creates [[WorldState]] with the underlying [[TerrainMap]] of the given size.
     * Randomly places the [[PlayerCharacter]] and some [[MobCharacter]].
     */
-  def apply(width: Int, height: Int): WorldState =
-    apply(width, height, DEFAULT_MOBS_TO_SPAWN)
+  def apply(width: Int, height: Int): WorldState = apply(width, height, DEFAULT_MOBS_TO_SPAWN)
 
   private[model] def apply(width: Int, height: Int, mobsToSpawn: Int): WorldState = {
     val terrainMap = new TerrainMap(width, height)

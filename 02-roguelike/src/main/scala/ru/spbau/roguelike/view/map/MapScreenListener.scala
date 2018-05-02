@@ -2,8 +2,9 @@ package ru.spbau.roguelike.view.map
 
 import com.typesafe.scalalogging.Logger
 import org.codetome.zircon.api.input.{Input, InputType}
+import ru.spbau.roguelike.model.MapDirection.{EastDirection, NorthDirection, SouthDirection, WestDirection}
 import ru.spbau.roguelike.model.WorldState
-import ru.spbau.roguelike.view.{AbstractScreenListener, GameView, InInventoryState, GameLostState}
+import ru.spbau.roguelike.view.{AbstractScreenListener, GameLostState, GameView, InInventoryState}
 
 /** The keyboard listener when the player is on the map screen. */
 class MapScreenListener(
@@ -17,16 +18,16 @@ class MapScreenListener(
       keyStroke.getInputType match {
         case InputType.ArrowUp =>
           MapScreenListener.logger.info("ArrowUp pressed")
-          worldState.moveCharacterUp()
+          worldState.moveCharacter(NorthDirection)
         case InputType.ArrowDown =>
           MapScreenListener.logger.info("ArrowDown pressed")
-          worldState.moveCharacterDown()
+          worldState.moveCharacter(SouthDirection)
         case InputType.ArrowLeft =>
           MapScreenListener.logger.info("ArrowLeft pressed")
-          worldState.moveCharacterLeft()
+          worldState.moveCharacter(WestDirection)
         case InputType.ArrowRight =>
           MapScreenListener.logger.info("ArrowRight pressed")
-          worldState.moveCharacterRight()
+          worldState.moveCharacter(EastDirection)
         case InputType.Character => keyStroke.getCharacter.toUpper match {
           case 'I' =>
             MapScreenListener.logger.info("'I' pressed")

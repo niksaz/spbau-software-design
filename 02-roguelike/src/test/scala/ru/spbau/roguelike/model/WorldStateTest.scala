@@ -1,6 +1,7 @@
 package ru.spbau.roguelike.model
 
 import org.scalatest.FunSuite
+import ru.spbau.roguelike.model.MapDirection.{EastDirection, NorthDirection, SouthDirection, WestDirection}
 
 class WorldStateTest extends FunSuite {
 
@@ -23,33 +24,33 @@ class WorldStateTest extends FunSuite {
     worldState.addChangeListener(() => {
       changesReceived += 1
     })
-    worldState.moveCharacterUp()
+    worldState.moveCharacter(NorthDirection)
     assert(changesReceived == 1)
-    worldState.moveCharacterDown()
+    worldState.moveCharacter(SouthDirection)
     assert(changesReceived == 2)
-    worldState.moveCharacterLeft()
+    worldState.moveCharacter(WestDirection)
     assert(changesReceived == 3)
-    worldState.moveCharacterRight()
+    worldState.moveCharacter(EastDirection)
     assert(changesReceived == 4)
   }
 
-  test("moveCharacterUp") {
-    testMoveByDelta(0, -1, (worldState: WorldState) => worldState.moveCharacterUp())
+  test("moveCharacterNorth") {
+    testMoveByDirection(NorthDirection)
   }
 
-  test("moveCharacterDown") {
-    testMoveByDelta(0, 1, (worldState: WorldState) => worldState.moveCharacterDown())
+  test("moveCharacterSouth") {
+    testMoveByDirection(SouthDirection)
   }
 
-  test("moveCharacterLeft") {
-    testMoveByDelta(-1, 0, (worldState: WorldState) => worldState.moveCharacterLeft())
+  test("moveCharacterWest") {
+    testMoveByDirection(WestDirection)
   }
 
-  test("moveCharacterRight") {
-    testMoveByDelta(1, 0, (worldState: WorldState) => worldState.moveCharacterRight())
+  test("moveCharacterEast") {
+    testMoveByDirection(EastDirection)
   }
 
-  private def testMoveByDelta(deltaX: Int, deltaY: Int, stateUpdater: WorldState => Unit): Unit = {
+  private def testMoveByDirection(dir: MapDirection.Direction): Unit = {
     val size = 10
     var worldState: WorldState = null
     var initPosX: Int = -1
@@ -58,9 +59,9 @@ class WorldStateTest extends FunSuite {
       worldState = WorldState(size, size, 0)
       initPosX = worldState.getCharacter.posX
       initPosY = worldState.getCharacter.posY
-    } while (!worldState.getTerrainMap.isPassable(initPosX + deltaX, initPosY + deltaY))
-    stateUpdater(worldState)
-    assert(worldState.getCharacter.posX == initPosX + deltaX)
-    assert(worldState.getCharacter.posY == initPosY + deltaY)
+    } while (!worldState.getTerrainMap.isPassable(initPosX + dir.deltaX, initPosY + dir.deltaY))
+    worldState.moveCharacter(dir)
+    assert(worldState.getCharacter.posX == initPosX + dir.deltaX)
+    assert(worldState.getCharacter.posY == initPosY + dir.deltaY)
   }
 }
