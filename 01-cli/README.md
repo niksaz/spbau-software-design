@@ -7,4 +7,6 @@ Design (``design.png`` in repository):
 
 ![](design.png)
 
-Fot more details look up the documentation in ``package.scala`` files. 
+For more details look up the documentation in ``package.scala`` files. 
+
+P.S. ![Comments](COMMENTS.md)

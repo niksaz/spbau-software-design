@@ -21,3 +21,5 @@ out/
 .scala_dependencies
 .worksheet
 .idea
+*.iml
+

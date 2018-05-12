@@ -41,11 +41,16 @@ class Repl(
 
   private def registerDefaultCommandRunners(environment: Environment): Environment = {
     var newEnvironment = environment
-    val commandRunners =
-      List(
-        new PwdCommandRunner, new EchoCommandRunner, new CatCommandRunner, new WcCommandRunner,
-        new GrepCommandRunner)
-    commandRunners.foreach { commandRunner =>
+    List(
+      new PwdCommandRunner,
+      new EchoCommandRunner,
+      new CatCommandRunner,
+      new GrepCommandRunner,
+      new WcCommandRunner,
+      new CdCommandRunner,
+      new LsCommandRunner
+    )
+      .foreach { commandRunner =>
       newEnvironment = newEnvironment.registerCommandRunner(commandRunner)
     }
     newEnvironment
