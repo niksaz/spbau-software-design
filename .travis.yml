@@ -3,6 +3,7 @@ scala:
     - 2.12.2
 env:
     - BUILD_DIR=01-cli
+    - BUILD_DIR=02-roguelike
 script: cd $BUILD_DIR && sbt ++$TRAVIS_SCALA_VERSION test
 notifications:
   email:
